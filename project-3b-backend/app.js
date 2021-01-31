@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+const ganttRoutes = require('./routes/gantt');
+
 const app = express();
 
 app.use(bodyParser.json()); // application/json
@@ -12,6 +14,8 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
+
+app.use(ganttRoutes);
 
 // Registering the error-handling middleware
 app.use((error, req, res, next) => {
