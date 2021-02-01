@@ -1,77 +1,3 @@
-// import React, { Component } from 'react';
-// import { SvelteGantt, SvelteGanttTable, SvelteGanttDependencies } from 'svelte-gantt';
-// import moment from 'moment';
-
-// import 'svelte-gantt/css/svelteGantt.css';
-// import './SvelteGanttReact.css';
-
-// class SvelteGanttReact extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.myRef = React.createRef();
-//   }
-
-//   componentDidMount() {
-//     const node = this.myRef.current;
-//     const gantt = new SvelteGantt({
-//       // target a DOM element
-//       target: node,
-//       // svelte-gantt options
-//       props: {
-//         rows: [
-//           { id: 1, label: 'Field Engineer A' },
-//           { id: 2, label: 'Field Engineer B' }
-//         ],
-//         tasks: [
-//           {
-//             id: 1,
-//             resourceId: 1,
-//             label: 'Scheduled Shift',
-//             from: moment('07:00', 'HH:mm'),
-//             to: moment('09:00', 'HH:mm'),
-//             classes: 'orange'
-//           },
-//           {
-//             id: 2,
-//             resourceId: 2,
-//             label: 'Scheduled Shift',
-//             from: moment('07:00', 'HH:mm'),
-//             to: moment('09:00', 'HH:mm'),
-//             classes: 'green'
-//           }
-//         ],
-//         headers: [
-//           { unit: 'day', format: 'dddd D MMMM' },
-//           { unit: 'hour', format: 'HH:mm' }
-//         ],
-//         fitWidth: true,
-//         from: moment('00:00', 'HH:mm'),
-//         to: moment('12:00', 'HH:mm'),
-//         tableHeaders: [{ title: 'Engineers', property: 'label', width: 140, type: 'tree' }],
-//         tableWidth: 240,
-//         ganttTableModules: [SvelteGanttTable],
-//         ganttBodyModules: [SvelteGanttDependencies],
-//         taskContent: task => `${task.label} ${task.from.format('HH:mm')}`
-//       }
-//     });
-//   }
-
-//   render() {
-//     return (
-//       <>
-//         <div className="gantt-controls">
-//           <button type="button" className="gantt-control-button" id="new-task">
-//             Drag to Gantt
-//           </button>
-//         </div>
-//         <div className="gantt-chart" ref={this.myRef} />
-//       </>
-//     );
-//   }
-// }
-
-// export default SvelteGanttReact; // this is class-based code, below is functional
-
 import React, { useState, useEffect, useRef } from 'react';
 import { SvelteGantt, SvelteGanttTable, SvelteGanttDependencies } from 'svelte-gantt';
 import moment from 'moment';
@@ -89,8 +15,6 @@ const SvelteGanttReact = props => {
 
   const [rows, setRows] = useState([]);
   const [tasks, setTasks] = useState([]);
-
-  const colours = ['blue', 'green', 'orange'];
 
   useEffect(() => {
     fetch('http://localhost:8080/getData')
@@ -115,8 +39,6 @@ const SvelteGanttReact = props => {
             to: moment(resData.tasks[key].to)
           });
         }
-        console.log('rows', rows);
-        console.log('tasks', tasks);
         setRows(rows);
         setTasks(tasks);
       })
@@ -143,8 +65,6 @@ const SvelteGanttReact = props => {
       taskContent: task => `${task.label} ${task.from.format('HH:mm')}`
     };
 
-    console.log('running');
-
     setGantt(
       new SvelteGantt({
         // Targeting the DOM element.
@@ -154,8 +74,6 @@ const SvelteGanttReact = props => {
       })
     );
   }, [rows, tasks]);
-
-  console.log(gantt);
 
   const onSetPreviousDay = () => {
     currentStart.subtract(1, 'day');
