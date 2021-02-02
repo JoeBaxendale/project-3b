@@ -90,12 +90,6 @@
   background: rgb(60, 98, 131);
 }
 
-/* .sg-task.selected.svelte-19txnoa {
-  outline: 2px solid red;
-  outline-offset: 3px;
-  z-index: 1;
-} */
-
 .sg-task.green {
   background-color: rgb(188, 235, 194);
 }
@@ -139,6 +133,7 @@
 }
 
 .column-header-cell {
+  justify-content: flex-start;
   border-right: #efefef 1px solid;
   border-bottom: #efefef 1px solid;
 }

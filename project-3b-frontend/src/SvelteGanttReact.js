@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { SvelteGantt, SvelteGanttTable, SvelteGanttDependencies } from 'svelte-gantt';
+import { SvelteGantt, SvelteGanttTable } from 'svelte-gantt';
 import moment from 'moment';
 
 import 'svelte-gantt/css/svelteGantt.css';
 import './SvelteGanttReact.css';
 
 const SvelteGanttReact = props => {
-  const ganttRef = useRef(null);
-
-  const [gantt, setGantt] = useState(null);
+  const divRef = useRef(null);
+  const svelteGanttRef = useRef(null);
 
   const currentStart = moment('00:00', 'HH:mm');
-  const currentEnd = moment('12:00', 'HH:mm');
+  const currentEnd = moment('23:59', 'HH:mm');
 
   const [rows, setRows] = useState([]);
   const [tasks, setTasks] = useState([]);
@@ -48,50 +47,55 @@ const SvelteGanttReact = props => {
   }, []);
 
   useEffect(() => {
+    // Cannot do anything without the div.
+    if (!divRef.current) return;
+
     const options = {
       rows: rows,
       tasks: tasks,
       headers: [
-        { unit: 'day', format: 'dddd D MMMM' },
-        { unit: 'hour', format: 'HH:mm' }
+        { unit: 'day', format: 'dddd D MMMM', sticky: true },
+        { unit: 'hour', format: 'HH:mm', sticky: true }
       ],
       fitWidth: true,
       from: currentStart,
       to: currentEnd,
+      minWidth: 2050,
       tableHeaders: [{ title: 'Engineers', property: 'label', width: 140, type: 'tree' }],
       tableWidth: 240,
       ganttTableModules: [SvelteGanttTable],
-      ganttBodyModules: [SvelteGanttDependencies],
       taskContent: task => `${task.label} ${task.from.format('HH:mm')}`
     };
 
-    setGantt(
-      new SvelteGantt({
-        // Targeting the DOM element.
-        target: ganttRef.current,
-        // `svelte-gantt` options.
+    if (!svelteGanttRef.current) {
+      // Mount new element.
+      svelteGanttRef.current = new SvelteGantt({
+        target: divRef.current,
         props: options
-      })
-    );
-  }, [rows, tasks]);
+      });
+    } else {
+      // Update current element.
+      svelteGanttRef.current.$set(options);
+    }
+  }, [rows, tasks, currentStart, currentEnd]);
 
   const onSetPreviousDay = () => {
     currentStart.subtract(1, 'day');
     currentEnd.subtract(1, 'day');
-    gantt.$set({
+    svelteGanttRef.current.$set({
       from: currentStart,
       to: currentEnd
     });
   };
 
   const onSetDayView = () => {
-    gantt.$set({
+    svelteGanttRef.current.$set({
       fitWidth: true,
       columnUnit: 'minute',
       columnOffset: 15,
       from: currentStart,
       to: currentEnd,
-      minWidth: 1000,
+      minWidth: 2050,
       headers: [
         { unit: 'day', format: 'dddd D MMMM' },
         { unit: 'hour', format: 'HH:mm' }
@@ -102,14 +106,14 @@ const SvelteGanttReact = props => {
   const onSetNextDay = () => {
     currentStart.add(1, 'day');
     currentEnd.add(1, 'day');
-    gantt.$set({
+    svelteGanttRef.current.$set({
       from: currentStart,
       to: currentEnd
     });
   };
 
   const onSetWeekView = () => {
-    gantt.$set({
+    svelteGanttRef.current.$set({
       fitWidth: false,
       columnUnit: 'hour',
       columnOffset: 1,
@@ -139,10 +143,10 @@ const SvelteGanttReact = props => {
           Week View
         </button>
         <button type="button" className="gantt-control-button" id="new-task">
-          Drag to Gantt
+          Add New Bar
         </button>
       </div>
-      <div className="gantt-chart" ref={ganttRef} />
+      <div className="gantt-chart" ref={divRef} />
     </>
   );
 };
