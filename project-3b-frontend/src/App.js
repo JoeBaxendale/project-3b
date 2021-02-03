@@ -1,5 +1,5 @@
 import React from 'react';
-import SvelteGanttReact from './SvelteGanttReact';
+import SvelteGanttReact from './containers/SvelteGanttReact/SvelteGanttReact';
 
 const App = props => {
   return (
