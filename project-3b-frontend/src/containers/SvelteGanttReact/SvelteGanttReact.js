@@ -16,7 +16,7 @@ const SvelteGanttReact = props => {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/getData')
+    fetch('http://localhost:8080/getData/FIELD_ENGINEER')
       .then(res => {
         if (res.status !== 200) {
           throw new Error('Failed to fetch data.');
