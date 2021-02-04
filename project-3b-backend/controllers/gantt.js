@@ -35,14 +35,14 @@ exports.getData = async (req, res, next) => {
     const data = await Row.find({ type: ganttChartType }, { label: 1, tasks: 1 }).populate('tasks');
 
     const rows = data.map(row => ({
-      id: row._id,
+      id: row._id.toString().substr(-3),
       label: row.label
     }));
 
     const tasks = data.flatMap(row => {
       return row.tasks.map(task => ({
-        id: task._id,
-        resourceId: task.row._id,
+        id: task._id.toString().substr(-3),
+        resourceId: task.row._id.toString().substr(-3),
         label: task.label,
         from: task.from,
         to: task.to,
