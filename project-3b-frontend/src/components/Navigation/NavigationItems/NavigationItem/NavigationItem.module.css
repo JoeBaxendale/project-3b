@@ -15,7 +15,9 @@
 .NavigationItem a:hover,
 .NavigationItem a:active,
 .NavigationItem a.active {
-  color: #dac4fa;
+  color: #000;
+  background-color: #dac4fa;
+  padding: 10px;
 }
 
 @media (min-width: 500px) {
@@ -37,6 +39,7 @@
   .NavigationItem a:hover,
   .NavigationItem a:active,
   .NavigationItem a.active {
+    background-color: unset;
     border-bottom: 4px solid #dac4fa;
     color: white;
   }
