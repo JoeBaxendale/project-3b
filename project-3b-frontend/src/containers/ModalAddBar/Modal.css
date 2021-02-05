@@ -10,11 +10,10 @@
     bottom: 0;
     background-color: rgba(0,0,0,0.5);
     z-index: 999;
-    cursor: pointer;
+
 }
 
 .content {
-    margin: 15% auto;
     background-color: white;
     border-radius: 0.25rem;
     width: 50vw;
