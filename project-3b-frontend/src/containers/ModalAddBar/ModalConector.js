@@ -1,6 +1,5 @@
 import React,  { useState } from 'react';
-
-import Button from "@material-ui/core/Button";
+import './Modal.css';
 import Modal from "./Modal";
 function ModalConnector() {
   const [status, setStatus] = useState(false);
