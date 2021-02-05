@@ -1,7 +1,6 @@
 import React from 'react';
 import Button from "@material-ui/core/Button";
-// close button
-//need add form component link here
+
 import './Modal.css'
 const Modal = (props) => {
   const { closeModal } = props;
@@ -9,11 +8,9 @@ const Modal = (props) => {
   return (
     <div className="overlay">
       <div className="content">
-        <h2>Add Bar</h2>
+        <h1>Add Bar</h1>
         <p>Name</p>
         <textarea placeholder="form to add new bar link to component"/>
-
-        <p>Shift Type</p>
 
         <p>Start Time</p>
 

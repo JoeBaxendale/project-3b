@@ -1,5 +1,6 @@
 .overlay {
-    position: fixed;
+    position:
+    absolute;
     display: block;
     overflow: auto;
     width: 100%;
@@ -18,5 +19,6 @@
     border-radius: 0.25rem;
     width: 50vw;
     padding: 2rem;
-    position: relative;
+    position: absolute;
 }
+

@@ -4,7 +4,7 @@ function ModalConnector() {
   const [status, setStatus] = useState(false);
   return (
     <div>
-      { status && (<Modal closeModal={() => setStatus(false)}></Modal>)}
+      { status && (<Modal closeModal={() => setStatus(false)}/>)}
         <button type="button" className="gantt-control-button" id="new-task" onClick={() => setStatus(true)}>
           Add New Bar
         </button>
