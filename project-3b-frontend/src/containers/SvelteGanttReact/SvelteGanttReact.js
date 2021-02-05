@@ -4,6 +4,7 @@ import moment from 'moment';
 
 import 'svelte-gantt/css/svelteGantt.css';
 import './SvelteGanttReact.css';
+import ModalConnector from '../ModalAddBar/ModalConector';
 
 const SvelteGanttReact = props => {
   const divRef = useRef(null);
@@ -142,9 +143,7 @@ const SvelteGanttReact = props => {
         <button type="button" className="gantt-control-button" onClick={onSetWeekView}>
           Week View
         </button>
-        <button type="button" className="gantt-control-button" id="new-task">
-          Add New Bar
-        </button>
+        <ModalConnector/>
       </div>
       <div className="gantt-chart" ref={divRef} />
     </>
