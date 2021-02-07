@@ -8,23 +8,26 @@ const Modal = (props) => {
   return (
     <div className={classes.overlay}>
       <div className={classes.content}>
-        <form>
+
         <h1>Add Bar</h1>
         <p>Name</p>
           <input type="text"/>
         <p>Label</p>
           <input type="text"/>
 
+        <p>Bar Colour</p>
+        <button className={classes.barColour1}> </button>
+        <button className={classes.barColour2}> </button>
+
         <p>Start Time</p>
 
         <p>End Time</p>
 
-        <p>Bar Colour</p>
+
+        <button  onClick={closeModal} className={classes.subButton}> Submit</button>
+        <button  onClick={closeModal} className={classes.cancelButton} > Cancel</button>
 
 
-        <Button variant="contained" color="primary" onClick={closeModal}> Submit</Button>
-        <Button variant="contained" color="secondary" onClick={closeModal}> Cancel</Button>
-        </form>
       </div>
 
     </div>
