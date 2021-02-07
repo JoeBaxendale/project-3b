@@ -1,6 +1,8 @@
 import React,  { useState } from 'react';
 import Modal from "./Modal";
-function ModalConnector() {
+
+
+const ModalConnector =()=> {
   const [status, setStatus] = useState(false);
   return (
     <div>

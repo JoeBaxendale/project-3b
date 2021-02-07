@@ -1,6 +1,5 @@
 .overlay {
-    position:
-    absolute;
+    position: absolute;
     display: block;
     overflow: auto;
     width: 100%;
@@ -19,7 +18,8 @@
     border-radius: 0.25rem;
     width: 50vw;
     padding: 2rem;
-    position: absolute;
+    position: fixed;
+
 }
 
 .barColour1 {
@@ -50,7 +50,7 @@ background-color: rgb(143, 197, 150);
     cursor: pointer;
     transition: background 0.2s;
     outline: none;
-    margin: 2px;
+    margin-top: 2vh;
 }
 
 .subButton:hover {
@@ -72,6 +72,7 @@ background-color: rgb(143, 197, 150);
     transition: background 0.2s;
     outline: none;
     margin: 2px;
+    margin-top: 2vh;
 }
 
 .cancelButton:hover {
