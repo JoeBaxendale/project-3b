@@ -1,18 +1,13 @@
 import React from 'react';
 import classes from './Modal.module.css';
 
-
-const SelectingUser= ({rows}) => {
-
-
+const SelectingUser = ({ rows }) => {
   return (
     <div>
-        <p>Name</p>
-        <select>
-          {rows}
-        </select>
+      <p>Name</p>
 
-      </div>
+      <select className={classes.dropDown}>{rows}</select>
+    </div>
   );
 };
 

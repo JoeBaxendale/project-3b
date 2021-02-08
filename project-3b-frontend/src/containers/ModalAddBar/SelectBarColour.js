@@ -12,7 +12,7 @@ const SelectBarColour = props => {
   return (
     <div>
       <p>Select Bar Colour</p>
-      <div className={classes.dropDown}>
+      <div>
         <select className={classes.dropDown} onSelect={handleSelect}>
           <option>Select</option>
           <option className={classes.barColour2}>Orange</option>
