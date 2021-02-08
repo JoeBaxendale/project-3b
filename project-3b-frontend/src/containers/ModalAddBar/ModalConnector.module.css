@@ -69,3 +69,9 @@
 .cancelButton:active {
     background-color: #910e0e;
 }
+
+.dropDown{
+    width:10vw;
+    height: 5vh;
+
+}
