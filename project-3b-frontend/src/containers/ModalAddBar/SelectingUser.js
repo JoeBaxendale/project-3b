@@ -2,14 +2,14 @@ import React from 'react';
 import classes from './Modal.module.css';
 
 
-const SelectingUser= () => {
+const SelectingUser= ({rows}) => {
 
 
   return (
     <div>
         <p>Name</p>
         <select>
-
+          {rows}
         </select>
 
       </div>

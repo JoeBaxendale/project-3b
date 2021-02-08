@@ -1,18 +1,44 @@
-import React,  { useState } from 'react';
-import Modal from "./Modal";
+import React, { useState } from 'react';
 
+import Modal from './Modal';
+import SelectingUser from './SelectingUser';
+import SelectingBarColour from './SelectingBarColour';
+import BarTime from './BarTime';
+import classes from './ModalConnector.module.css';
 
-const ModalConnector =()=> {
+const ModalConnector = () => {
   const [status, setStatus] = useState(false);
+
+  const modalClosedHandler = () => {
+    setStatus(false);
+  };
+
   return (
     <div>
-      { status && (<Modal closeModal={() => setStatus(false)}/>)}
-        <button type="button" className="gantt-control-button" id="new-task" onClick={() => setStatus(true)}>
-          Add New Bar
+      <Modal show={status} modalClosed={modalClosedHandler}>
+        <h1>Add New Bar</h1>
+        <SelectingUser />
+        <p>Label</p>
+        <input type="text" />
+        <SelectingBarColour />
+        <BarTime />
+        <button onClick={modalClosedHandler} className={classes.subButton}>
+          Submit
         </button>
-
+        <button onClick={modalClosedHandler} className={classes.cancelButton}>
+          Cancel
+        </button>
+      </Modal>
+      <button
+        type="button"
+        className="gantt-control-button"
+        id="new-task"
+        onClick={() => setStatus(true)}
+      >
+        Add New Bar
+      </button>
     </div>
   );
-}
+};
 
 export default ModalConnector;

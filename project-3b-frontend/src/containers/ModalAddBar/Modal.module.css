@@ -1,84 +1,22 @@
-.overlay {
-    position: absolute;
-    display: block;
-    overflow: auto;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0,0,0,0.5);
-    z-index: 999;
-
-}
-
-.content {
-    background-color: white;
-    border-radius: 0.25rem;
-    width: 50vw;
-    padding: 2rem;
+.Modal {
     position: fixed;
-
+    z-index: 500;
+    background-color: #fff;
+    width: 70%;
+    height: 80%;
+    border: 1px solid #ccc;
+    box-shadow: 1px 1px 1px black;
+    padding: 16px;
+    left: 15%;
+    top: 15%;
+    box-sizing: border-box;
+    transition: all 0.3s ease-out;
+    overflow-y: scroll;
 }
 
-.barColour1 {
-    background-color: rgb(188, 235, 194);
-    width: 5vh;
-    height: 5vh;
-    margin: 2vh;
-}
-.barColour1:hover{
-background-color: rgb(143, 197, 150);
-}
-.barColour2 {
-   background-color: rgb(254, 172, 49);
-    width: 5vh;
-    height: 5vh;
-}
-.barColour2:hover {
-    background-color: rgb(238, 161, 45);
-}
-
-.subButton {
-    border: transparent;
-    font-size: 14px;
-    font-weight: 300;
-    padding: 6px 12px;
-    background: #7859cc;
-    color: #fff;
-    cursor: pointer;
-    transition: background 0.2s;
-    outline: none;
-    margin-top: 2vh;
-}
-
-.subButton:hover {
-    background-color: #947adb;
-}
-
-.subButton:active {
-    background-color: #560e91;
-}
-
-.cancelButton {
-    border: transparent;
-    font-size: 14px;
-    font-weight: 300;
-    padding: 6px 12px;
-    background: #ce1b1b;
-    color: #fff;
-    cursor: pointer;
-    transition: background 0.2s;
-    outline: none;
-    margin: 2px;
-    margin-top: 2vh;
-}
-
-.cancelButton:hover {
-    background-color: #db7a7a;
-}
-
-.cancelButton:active {
-    background-color: #910e0e;
+@media (min-width: 600px) {
+    .Modal {
+        width: 500px;
+        left: calc(50% - 250px)
+    }
 }
