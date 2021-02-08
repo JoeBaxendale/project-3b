@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 
 import Modal from './Modal';
 import SelectingUser from './SelectingUser';
-import SelectingBarColour from './SelectingBarColour';
+
 import BarTime from './BarTime';
 import classes from './ModalConnector.module.css';
+import SelectBarColour from './SelectBarColour';
 
 const ModalConnector = () => {
   const [status, setStatus] = useState(false);
@@ -20,7 +21,7 @@ const ModalConnector = () => {
         <SelectingUser />
         <p>Label</p>
         <input type="text" />
-        <SelectingBarColour />
+        <SelectBarColour />
         <BarTime />
         <button onClick={modalClosedHandler} className={classes.subButton}>
           Submit

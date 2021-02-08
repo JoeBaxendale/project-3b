@@ -1,16 +1,27 @@
+
 .barColour1 {
-    background-color: rgb(188, 235, 194);
-    width: 5vh;
-    height: 5vh;
-    margin: 2vh;
+    border: transparent;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 6px 12px;
+    background-color: rgb(143, 197, 150);
+    transition: background 0.2s;
+    outline: none;
 }
+
+
 .barColour1:hover{
     background-color: rgb(143, 197, 150);
 }
 .barColour2 {
+    border: transparent;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 6px 12px;
     background-color: rgb(254, 172, 49);
-    width: 5vh;
-    height: 5vh;
+    transition: background 0.2s;
+    outline: none;
+    margin-right: 5vh;
 }
 .barColour2:hover {
     background-color: rgb(238, 161, 45);
