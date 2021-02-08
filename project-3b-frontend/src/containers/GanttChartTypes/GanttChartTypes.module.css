@@ -1,0 +1,24 @@
+.GanttChartTypes {
+  margin-top: 0.25rem;
+  overflow: hidden;
+}
+
+.GanttChartType {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 200px;
+  margin: 20px auto;
+  min-width: 400px;
+  width: 60%;
+  height: 70px;
+  border-radius: 2px;
+  border: 2px solid #b8b7b7;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.GanttChartType:hover {
+  color: #5514b4;
+  border: 2px solid #330e6b;
+}
