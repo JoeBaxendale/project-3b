@@ -104,8 +104,8 @@ const SvelteGanttReact = props => {
       to: currentEnd,
       minWidth: 2050,
       headers: [
-        { unit: 'day', format: 'dddd D MMMM' },
-        { unit: 'hour', format: 'HH:mm' }
+        { unit: 'day', format: 'dddd D MMMM', sticky: true },
+        { unit: 'hour', format: 'HH:mm', sticky: true }
       ]
     });
   };
@@ -128,8 +128,8 @@ const SvelteGanttReact = props => {
       to: currentStart.clone().endOf('week'),
       minWidth: 5000,
       headers: [
-        { unit: 'month', format: 'MMMM YYYY' },
-        { unit: 'day', format: 'ddd DD' }
+        { unit: 'month', format: 'MMMM YYYY', sticky: true },
+        { unit: 'day', format: 'ddd DD', sticky: true }
       ]
     });
   };
