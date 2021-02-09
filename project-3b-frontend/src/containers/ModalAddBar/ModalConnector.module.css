@@ -6,6 +6,7 @@
     padding: 6px 12px;
     background-color: rgb(143, 197, 150);
     transition: background 0.2s;
+    color: #fff;
     outline: none;
 }
 
@@ -19,6 +20,7 @@
     font-weight: 300;
     padding: 6px 12px;
     background-color: rgb(254, 172, 49);
+    color: #fff;
     transition: background 0.2s;
     outline: none;
     margin-right: 5vh;
