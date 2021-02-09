@@ -15,8 +15,12 @@ const SvelteGanttReact = props => {
   const [rows, setRows] = useState([]);
   const [tasks, setTasks] = useState([]);
 
+  const [error, setError] = useState('');
+
+  let errorMessage = null;
+
   useEffect(() => {
-    fetch('http://localhost:8080/getData/FIELD_ENGINEER')
+    fetch(`http://localhost:8080/getData/${props.location.pathname.split('/').pop()}`)
       .then(res => {
         if (res.status !== 200) {
           throw new Error('Failed to fetch data.');
@@ -43,8 +47,11 @@ const SvelteGanttReact = props => {
       })
       .catch(err => {
         console.log(err);
+        setError(err.message);
       });
-  }, []);
+  }, [props.location.pathname]);
+
+  errorMessage = <p>{error}</p>;
 
   useEffect(() => {
     // Cannot do anything without the div.
@@ -97,8 +104,8 @@ const SvelteGanttReact = props => {
       to: currentEnd,
       minWidth: 2050,
       headers: [
-        { unit: 'day', format: 'dddd D MMMM' },
-        { unit: 'hour', format: 'HH:mm' }
+        { unit: 'day', format: 'dddd D MMMM', sticky: true },
+        { unit: 'hour', format: 'HH:mm', sticky: true }
       ]
     });
   };
@@ -121,32 +128,38 @@ const SvelteGanttReact = props => {
       to: currentStart.clone().endOf('week'),
       minWidth: 5000,
       headers: [
-        { unit: 'month', format: 'MMMM YYYY' },
-        { unit: 'day', format: 'ddd DD' }
+        { unit: 'month', format: 'MMMM YYYY', sticky: true },
+        { unit: 'day', format: 'ddd DD', sticky: true }
       ]
     });
   };
 
   return (
     <>
-      <div className="gantt-controls">
-        <button type="button" className="gantt-control-button" onClick={onSetPreviousDay}>
-          &lt;
-        </button>
-        <button type="button" className="gantt-control-button" onClick={onSetDayView}>
-          Day View
-        </button>
-        <button type="button" className="gantt-control-button" onClick={onSetNextDay}>
-          &gt;
-        </button>
-        <button type="button" className="gantt-control-button" onClick={onSetWeekView}>
-          Week View
-        </button>
-        <button type="button" className="gantt-control-button" id="new-task">
-          Add New Bar
-        </button>
-      </div>
-      <div className="gantt-chart" ref={divRef} />
+      {error ? (
+        errorMessage
+      ) : (
+        <>
+          <div className="gantt-controls">
+            <button type="button" className="gantt-control-button" onClick={onSetPreviousDay}>
+              &lt;
+            </button>
+            <button type="button" className="gantt-control-button" onClick={onSetDayView}>
+              Day View
+            </button>
+            <button type="button" className="gantt-control-button" onClick={onSetNextDay}>
+              &gt;
+            </button>
+            <button type="button" className="gantt-control-button" onClick={onSetWeekView}>
+              Week View
+            </button>
+            <button type="button" className="gantt-control-button" id="new-task">
+              Add New Bar
+            </button>
+          </div>
+          <div className="gantt-chart" ref={divRef} />
+        </>
+      )}
     </>
   );
 };

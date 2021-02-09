@@ -34,6 +34,12 @@ exports.getData = async (req, res, next) => {
   try {
     const data = await Row.find({ type: ganttChartType }, { label: 1, tasks: 1 }).populate('tasks');
 
+    if (!data.length) {
+      const error = new Error('Could not find data for Gantt chart.');
+      error.statusCode = 404;
+      throw error;
+    }
+
     const rows = data.map(row => ({
       id: row._id.toString().substr(-3),
       label: row.label
