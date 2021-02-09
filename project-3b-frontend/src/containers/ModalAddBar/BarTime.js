@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import TimePicker from 'react-time-picker';
+
+import DateTimePicker from 'react-datetime-picker';
 const BarTime = () => {
-  const [StartTime, NewStartTime] = useState('10:00');
-  const [EndTime, NewEndTime] = useState('10:00');
+  const [StartTime, NewStartTime] = useState(new Date());
+  const [EndTime, NewEndTime] = useState(new Date());
   return (
     <div>
       <p>Start Time</p>
       <div>
-        <TimePicker NewStartTime={NewStartTime} StartTime={StartTime} />
+        <DateTimePicker NewStartTime={NewStartTime} StartTime={StartTime} />
       </div>
       <p>End Time</p>
       <div>
-        <TimePicker NewEndTime={NewEndTime} EndTime={EndTime} />
+        <DateTimePicker NewEndTime={NewEndTime} EndTime={EndTime} />
       </div>
     </div>
   );

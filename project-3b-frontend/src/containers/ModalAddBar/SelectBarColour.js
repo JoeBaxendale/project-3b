@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import classes from './ModalConnector.module.css';
 
 const SelectBarColour = () => {
+  const [colours] = useState('');
+
   const [colour, setColour] = useState('');
 
   const handleSelect = e => {
