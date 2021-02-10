@@ -4,30 +4,59 @@ const Row = require('../models/row');
 const Task = require('../models/task');
 
 exports.getData = async (req, res, next) => {
-  // const firstRow = new Row({ label: 'Field Engineer A', type: 'FIELD_ENGINEER' });
-  // const secondRow = new Row({ label: 'Field Engineer B', type: 'FIELD_ENGINEER' });
-  // await firstRow.save();
-  // await secondRow.save();
-  // const firstTask = new Task({
-  //   row: firstRow,
-  //   label: 'Scheduled Shift',
-  //   from: moment('07:00', 'HH:mm'),
-  //   to: moment('09:00', 'HH:mm'),
-  //   classes: 'orange'
-  // });
-  // const secondTask = new Task({
-  //   row: secondRow,
-  //   label: 'Scheduled Shift',
-  //   from: moment('07:00', 'HH:mm'),
-  //   to: moment('09:00', 'HH:mm'),
-  //   classes: 'green'
-  // });
-  // await firstTask.save();
-  // await secondTask.save();
-  // firstRow.tasks.push(firstTask);
-  // secondRow.tasks.push(secondTask);
-  // firstRow.save();
-  // secondRow.save();
+  // const colours = ['blue', 'green', 'orange'];
+
+  // for (let i = 0; i < 4; i++) {
+  //   const randomHour = (Math.random() * 10) | 0;
+  //   const randomDay = (Math.random() * 5) | (0 + 1);
+
+  //   let row = new Row({
+  //     _id: `5c0f66b979af55031b34710${i}`,
+  //     label: 'Field Engineer ' + String.fromCharCode(65 + i),
+  //     type: 'FIELD_ENGINEER'
+  //   });
+
+  //   await row.save();
+
+  //   const task = new Task({
+  //     _id: `5c0f66b979af55031b34720${i}`,
+  //     row: row,
+  //     label: 'Scheduled Shift',
+  //     from: moment(`${randomHour}:00`, 'HH:mm'),
+  //     to: moment(`${randomHour + randomDay}:00`, 'HH:mm'),
+  //     classes: colours[(Math.random() * colours.length) | 0]
+  //   });
+
+  //   await task.save();
+  //   row.tasks.push(task);
+  //   await row.save();
+  // }
+
+  // for (let i = 4; i < 10; i++) {
+  //   const randomHour = (Math.random() * 10) | 0;
+  //   const randomDay = (Math.random() * 5) | (0 + 1);
+
+  //   let row = new Row({
+  //     _id: `5c0f66b979af55031b34710${i}`,
+  //     label: 'Tennis Court ' + String.fromCharCode(65 + i),
+  //     type: 'TENNIS_COURT'
+  //   });
+
+  //   await row.save();
+
+  //   const task = new Task({
+  //     _id: `5c0f66b979af55031b34720${i}`,
+  //     row: row,
+  //     label: 'Scheduled Slot',
+  //     from: moment(`${randomHour}:00`, 'HH:mm'),
+  //     to: moment(`${randomHour + randomDay}:00`, 'HH:mm'),
+  //     classes: colours[(Math.random() * colours.length) | 0]
+  //   });
+
+  //   await task.save();
+  //   row.tasks.push(task);
+  //   await row.save();
+  // }
 
   const ganttChartType = req.params.ganttChartType;
 
