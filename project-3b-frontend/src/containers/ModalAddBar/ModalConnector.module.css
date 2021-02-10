@@ -10,10 +10,6 @@
     outline: none;
 }
 
-
-.barColour1:hover{
-    background-color: rgb(143, 197, 150);
-}
 .barColour2 {
     border: transparent;
     font-size: 14px;
@@ -25,9 +21,7 @@
     outline: none;
     margin-right: 5vh;
 }
-.barColour2:hover {
-    background-color: rgb(238, 161, 45);
-}
+
 
 .subButton {
     border: transparent;

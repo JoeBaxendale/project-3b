@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classes from './Modal.module.css';
+import Modal from './Modal';
 
-const SelectingUser = ({ rows }) => {
+const SelectingUser = () => {
   return (
     <div>
       <p>Name</p>
-
-      <select className={classes.dropDown}>{rows}</select>
+      <input type="text" />
     </div>
   );
 };

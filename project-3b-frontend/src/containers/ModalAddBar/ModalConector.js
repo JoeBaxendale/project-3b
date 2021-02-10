@@ -14,6 +14,10 @@ const ModalConnector = () => {
     setStatus(false);
   };
 
+  const modalSubmitHandler = () => {
+    setStatus(false);
+  };
+
   return (
     <div>
       <Modal show={status} modalClosed={modalClosedHandler}>
@@ -26,7 +30,7 @@ const ModalConnector = () => {
         <button onClick={modalClosedHandler} className={classes.subButton}>
           Submit
         </button>
-        <button onClick={modalClosedHandler} className={classes.cancelButton}>
+        <button onClick={modalSubmitHandler} className={classes.cancelButton}>
           Cancel
         </button>
       </Modal>
