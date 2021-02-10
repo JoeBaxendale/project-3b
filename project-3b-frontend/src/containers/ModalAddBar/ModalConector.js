@@ -27,10 +27,10 @@ const ModalConnector = () => {
         <input type="text" />
         <SelectBarColour />
         <BarTime />
-        <button onClick={modalClosedHandler} className={classes.subButton}>
+        <button onClick={modalSubmitHandler} className={classes.subButton}>
           Submit
         </button>
-        <button onClick={modalSubmitHandler} className={classes.cancelButton}>
+        <button onClick={modalClosedHandler} className={classes.cancelButton}>
           Cancel
         </button>
       </Modal>
