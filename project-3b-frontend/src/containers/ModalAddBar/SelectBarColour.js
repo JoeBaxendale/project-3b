@@ -17,6 +17,7 @@ const SelectBarColour = () => {
           <option>Select</option>
           <option className={classes.barColour2}>Orange</option>
           <option className={classes.barColour1}>Green</option>
+          <option className={classes.barColour3}>Blue</option>
         </select>
       </div>
     </div>

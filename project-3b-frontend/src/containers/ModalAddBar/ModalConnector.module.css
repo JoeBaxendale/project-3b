@@ -21,6 +21,17 @@
     outline: none;
     margin-right: 5vh;
 }
+.barColour3 {
+    border: transparent;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 6px 12px;
+    background-color: rgb(71, 93, 243);
+    color: #fff;
+    transition: background 0.2s;
+    outline: none;
+    margin-right: 5vh;
+}
 
 
 .subButton {
