@@ -1,14 +1,18 @@
 image: node:latest
 
-
-    stages:
+stages:
     - build
 
-
+build:node:
+    stage: build
+    script:
+        - ./npm install
 
     artifacts:
-    name:
-     reports:
-   junit: build/test-results/test/TEST-*.xml
-    expire_in: 1 week
-     allow_failure: true
+        name:
+        reports:
+            junit: build/test-results/test/TEST-*.xml
+        expire_in: 1 week
+    allow_failure: true
+
+
