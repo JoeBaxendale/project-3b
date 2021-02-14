@@ -1,21 +1,14 @@
- image: node:latest
+image: node:latest
 
-stages:
+
+    stages:
     - build
-    - test
-    
-cache:
-    paths:
-    - node_modules/
 
-install_dependencies:
-    stage: build
-    script:
-     - npm install
+
+
     artifacts:
-    paths:
-        - node_modules/
-
-testing_testing:
-    stage: test
-    script: npm test
+    name:
+     reports:
+   junit: build/test-results/test/TEST-*.xml
+    expire_in: 1 week
+     allow_failure: true
