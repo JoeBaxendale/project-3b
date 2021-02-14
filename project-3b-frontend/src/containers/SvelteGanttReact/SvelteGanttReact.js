@@ -86,6 +86,36 @@ const SvelteGanttReact = props => {
     }
   }, [rows, tasks, currentStart, currentEnd]);
 
+  useEffect(() => {
+    if (!svelteGanttRef.current) return;
+
+    svelteGanttRef.current.api.tasks.on.changed(task => {
+      fetch('http://localhost:8080/task', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          movedTask: task[0].task.model,
+          newRow:
+            task[0].sourceRow.model !== task[0].targetRow.model ? task[0].targetRow.model : null
+        })
+      })
+        .then(res => {
+          if (res.status !== 200 && res.status !== 201) {
+            throw new Error('Could not update row!');
+          }
+          return res.json();
+        })
+        .then(resData => {
+          console.log(resData);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    });
+  }, []);
+
   const onSetPreviousDay = () => {
     currentStart.subtract(1, 'day');
     currentEnd.subtract(1, 'day');
