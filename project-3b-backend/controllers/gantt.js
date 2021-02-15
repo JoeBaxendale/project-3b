@@ -97,3 +97,46 @@ exports.getData = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.updateTask = async (req, res, next) => {
+  const movedTask = req.body.movedTask;
+  try {
+    const task = await Task.findById(`5c0f66b979af55031b347${movedTask.id}`);
+    if (!task) {
+      const error = new Error('Task not found.');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    // If the retreived `newRoom` is null i.e. the row was not changed...
+    if (!req.body.newRow) {
+      task.from = movedTask.from;
+      task.to = movedTask.to;
+      await task.save();
+      res.status(200).json({ message: 'Task updated.', task: task });
+      return next();
+    }
+
+    // If the row was changed (and potentially the times of the task)...
+
+    const oldRow = await Row.findById(task.row);
+    const newRow = await Row.findById(`5c0f66b979af55031b347${req.body.newRow.id}`);
+
+    oldRow.tasks.pull(task);
+    await oldRow.save();
+    newRow.tasks.push(task);
+    await newRow.save();
+
+    task.row = newRow;
+    task.from = movedTask.from;
+    task.to = movedTask.to;
+    await task.save();
+
+    res.status(200).json({ message: 'Task updated.', task: task });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
