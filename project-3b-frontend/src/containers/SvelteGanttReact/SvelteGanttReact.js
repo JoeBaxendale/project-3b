@@ -5,6 +5,7 @@ import moment from 'moment';
 import 'svelte-gantt/css/svelteGantt.css';
 import './SvelteGanttReact.css';
 
+
 const SvelteGanttReact = props => {
   const divRef = useRef(null);
   const svelteGanttRef = useRef(null);
@@ -19,17 +20,17 @@ const SvelteGanttReact = props => {
 
   let errorMessage = null;
   let title = null;
-  //let barTag = null;
 
   if (window.location.href.includes("FIELD_ENGINEER"))
   {
-    title = " engineers ";
-  //  barTag="scheduled shift "
+    title = "Engineers ";
+
   }
-  else {
-    title = "tennis court ";
-  //  barTag = "booked "
+  else if(window.location.href.includes("TENNIS_COURT")) {
+    title = "Tennis court ";
   }
+  else
+    title = "";
 
   useEffect(() => {
     fetch(`http://localhost:8080/getData/${props.location.pathname.split('/').pop()}`)
