@@ -18,6 +18,18 @@ const SvelteGanttReact = props => {
   const [error, setError] = useState('');
 
   let errorMessage = null;
+  let title = null;
+  //let barTag = null;
+
+  if (window.location.href.includes("FIELD_ENGINEER"))
+  {
+    title = " engineers ";
+  //  barTag="scheduled shift "
+  }
+  else {
+    title = "tennis court ";
+  //  barTag = "booked "
+  }
 
   useEffect(() => {
     fetch(`http://localhost:8080/getData/${props.location.pathname.split('/').pop()}`)
@@ -68,7 +80,9 @@ const SvelteGanttReact = props => {
       from: currentStart,
       to: currentEnd,
       minWidth: 2050,
-      tableHeaders: [{ title: 'Engineers', property: 'label', width: 140, type: 'tree' }],
+
+
+      tableHeaders: [{ title: title , property: 'label', width: 140, type: 'tree' }],
       tableWidth: 240,
       ganttTableModules: [SvelteGanttTable],
       taskContent: task => `${task.label} ${task.from.format('HH:mm')}`
