@@ -29,8 +29,7 @@ const SvelteGanttReact = props => {
   else if(window.location.href.includes("TENNIS_COURT")) {
     title = "Tennis court ";
   }
-  else
-    title = "";
+ 
 
   useEffect(() => {
     fetch(`http://localhost:8080/getData/${props.location.pathname.split('/').pop()}`)
