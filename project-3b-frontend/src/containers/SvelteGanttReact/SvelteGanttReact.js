@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import 'svelte-gantt/css/svelteGantt.css';
 import './SvelteGanttReact.css';
-import ModalConnector from '../AddBarModal/ModalConnector';
+import SvelteGanttAddBar from '../SvelteGanttAddBar/SvelteGanttAddBar';
 
 const SvelteGanttReact = props => {
   const divRef = useRef(null);
@@ -93,7 +93,7 @@ const SvelteGanttReact = props => {
       // Update current element.
       svelteGanttRef.current.$set(options);
     }
-  }, [rows, tasks, currentStart, currentEnd]);
+  }, [rows, tasks, currentStart, currentEnd, title]);
 
   useEffect(() => {
     if (!svelteGanttRef.current) return;
@@ -192,8 +192,8 @@ const SvelteGanttReact = props => {
             <button type="button" className="gantt-control-button" onClick={onSetWeekView}>
               Week View
             </button>
-            <ModalConnector />
           </div>
+          <SvelteGanttAddBar gantt={svelteGanttRef.current} />
           <div className="gantt-chart" ref={divRef} />
         </>
       )}
