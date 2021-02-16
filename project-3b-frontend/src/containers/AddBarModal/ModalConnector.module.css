@@ -1,0 +1,61 @@
+.cancelButton {
+    border: transparent;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 6px 12px;
+    background: #ce1b1b;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+    outline: none;
+    margin: 2px;
+    margin-top: 2vh;
+}
+
+.cancelButton:hover {
+    background-color: #db7a7a;
+}
+
+.cancelButton:active {
+    background-color: #910e0e;
+}
+
+.barButton {
+    border: transparent;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 6px 12px;
+    background-color: rgb(254, 172, 49);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+    outline: none;
+    margin: 2px;
+    margin-top: 2vh;
+}
+.barButton2 {
+    border: transparent;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 6px 12px;
+    background-color: rgb(188, 235, 194);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+    outline: none;
+    margin: 2px;
+    margin-top: 2vh;
+}
+.barButton3 {
+    border: transparent;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 6px 12px;
+    background-color: rgb(116, 191, 255);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+    outline: none;
+    margin: 2px;
+    margin-top: 2vh;
+}
