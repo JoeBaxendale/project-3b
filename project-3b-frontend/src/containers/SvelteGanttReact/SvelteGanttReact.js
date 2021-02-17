@@ -18,6 +18,10 @@ const SvelteGanttReact = props => {
 
   const [error, setError] = useState('');
 
+  const [jsonFile, setJsonFile] = useState('');
+
+  //let jsonFile = '';
+
   let errorMessage = null;
   let title = null;
 
@@ -56,6 +60,7 @@ const SvelteGanttReact = props => {
         }
         setRows(rows);
         setTasks(tasks);
+        setJsonFile(rows);
       })
       .catch(err => {
         console.log(err);
@@ -178,6 +183,17 @@ const SvelteGanttReact = props => {
     });
   };
 
+  const toggleJson = () => {
+    console.log("yeee")
+    let element = document.getElementsByClassName("json-display");
+    console.log(element[0].style.visibility == "visible")
+    if(element[0].style.visibility == "visible") {
+      element[0].style.visibility = "hidden"
+    }else{
+      element[0].style.visibility = "visible"
+    }
+  }
+
   return (
     <>
       {error ? (
@@ -202,6 +218,8 @@ const SvelteGanttReact = props => {
             </button>
           </div>
           <div className="gantt-chart" ref={divRef} />
+          <button type="button" className="gantt-control-button" onClick={toggleJson}> Edit Json</button>
+          <pre className="json-display" > aaaaaaaaaaa{ jsonFile.toString()} </pre>
         </>
       )}
     </>
