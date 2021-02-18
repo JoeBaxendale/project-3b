@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { SvelteGantt, SvelteGanttTable } from 'svelte-gantt';
 import moment from 'moment';
 
+import Spinner from '../../components/UI/Spinner/Spinner';
 import 'svelte-gantt/css/svelteGantt.css';
 import './SvelteGanttReact.css';
 import * as actions from '../../store/actions';
@@ -67,14 +68,9 @@ const SvelteGanttReact = props => {
     if (!svelteGanttRef.current) return;
 
     svelteGanttRef.current.api.tasks.on.changed(task => {
-      onTaskChange(task[0]);
+      onTaskChange(task[0], lastPartOfUrl);
     });
-  }, [onTaskChange, props.selectedGanttChart]);
-
-  let errorMessage = null;
-  if (props.error) {
-    errorMessage = <p>{props.error}</p>;
-  }
+  }, [onTaskChange, props.selectedGanttChart, lastPartOfUrl]);
 
   const onSetPreviousDay = () => {
     currentStart.subtract(1, 'day');
@@ -126,7 +122,10 @@ const SvelteGanttReact = props => {
 
   return (
     <>
-      {errorMessage || (
+      {props.loading && <Spinner />}
+      {props.error ? (
+        <p>{props.error}</p>
+      ) : (
         <>
           <div className="gantt-controls">
             <button type="button" className="gantt-control-button" onClick={onSetPreviousDay}>
@@ -164,7 +163,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onFetchData: path => dispatch(actions.fetchData(path)),
-    onTaskChange: task => dispatch(actions.taskChange(task))
+    onTaskChange: (taskInfo, path) => dispatch(actions.taskChange(taskInfo, path))
   };
 };
 

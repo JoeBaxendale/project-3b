@@ -49,7 +49,7 @@ export const fetchData = path => {
     const rows = [];
     const tasks = [];
 
-    if (path) {
+    if (path !== 'new') {
       try {
         const response = await fetch(`http://localhost:8080/getData/${path}`);
         const resData = await response.json();
@@ -82,33 +82,37 @@ export const fetchData = path => {
   };
 };
 
-export const taskChange = taskInfo => {
+export const taskChange = (taskInfo, path) => {
   return async dispatch => {
     dispatch(taskChangeStart());
 
-    try {
-      const response = await fetch('http://localhost:8080/task', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          movedTask: taskInfo.task.model,
-          newRow:
-            taskInfo.sourceRow.model !== taskInfo.targetRow.model ? taskInfo.targetRow.model : null
-        })
-      });
+    if (path !== 'new') {
+      try {
+        const response = await fetch('http://localhost:8080/task', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            movedTask: taskInfo.task.model,
+            newRow:
+              taskInfo.sourceRow.model !== taskInfo.targetRow.model
+                ? taskInfo.targetRow.model
+                : null
+          })
+        });
 
-      const resData = await response.json();
+        const resData = await response.json();
 
-      if (!response.ok) {
-        throw new Error(resData.message || 'Could not update row!');
+        if (!response.ok) {
+          throw new Error(resData.message || 'Could not update row!');
+        }
+
+        dispatch(taskChangeSuccess());
+      } catch (err) {
+        console.log(err.message);
+        dispatch(taskChangeFail(err.message));
       }
-
-      dispatch(taskChangeSuccess());
-    } catch (err) {
-      console.log(err.message);
-      dispatch(taskChangeFail(err.message));
     }
   };
 };
