@@ -1,1 +1,1 @@
-export { fetchData, setSelectedGanttChart, taskChange } from './gantt';
+export { fetchData, taskChange } from './gantt';

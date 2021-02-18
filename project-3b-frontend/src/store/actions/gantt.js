@@ -2,13 +2,6 @@ import moment from 'moment';
 
 import * as actionTypes from './actionTypes';
 
-export const setSelectedGanttChart = ganttChartType => {
-  return {
-    type: actionTypes.SET_SELECTED_GANTT_CHART,
-    ganttChartType: ganttChartType
-  };
-};
-
 export const fetchDataStart = () => {
   return {
     type: actionTypes.FETCH_DATA_START
@@ -89,7 +82,7 @@ export const fetchData = path => {
   };
 };
 
-export const taskChange = (taskInfo, selectedGanttChart) => {
+export const taskChange = taskInfo => {
   return async dispatch => {
     dispatch(taskChangeStart());
 

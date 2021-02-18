@@ -4,13 +4,8 @@ import { updateObject } from '../../shared/utility';
 const initialState = {
   rows: [],
   tasks: [],
-  selectedGanttChart: null,
   error: null,
   loading: false
-};
-
-const setSelectedGanttChart = (state, action) => {
-  return updateObject(state, { selectedGanttChart: action.ganttChartType });
 };
 
 const fetchDataStart = (state, action) => {
@@ -32,8 +27,6 @@ const fetchDataFail = (state, action) => {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.SET_SELECTED_GANTT_CHART:
-      return setSelectedGanttChart(state, action);
     case actionTypes.FETCH_DATA_START:
       return fetchDataStart(state, action);
     case actionTypes.FETCH_DATA_SUCCESS:

@@ -16,16 +16,18 @@ const SvelteGanttReact = props => {
 
   const { onFetchData, onTaskChange } = props;
 
+  const lastPartOfUrl = props.location.pathname.split('/').pop();
+
   let title = null;
-  if (window.location.href.includes('FIELD_ENGINEER')) {
+  if (lastPartOfUrl === 'FIELD_ENGINEER') {
     title = 'Field Engineers';
-  } else if (window.location.href.includes('TENNIS_COURT')) {
+  } else if (lastPartOfUrl === 'TENNIS_COURT') {
     title = 'Tennis Court';
   }
 
   useEffect(() => {
-    onFetchData(props.selectedGanttChart);
-  }, [onFetchData, props.selectedGanttChart]);
+    onFetchData(lastPartOfUrl);
+  }, [onFetchData, lastPartOfUrl]);
 
   useEffect(() => {
     // Cannot do anything without the div.
@@ -42,7 +44,6 @@ const SvelteGanttReact = props => {
       from: currentStart,
       to: currentEnd,
       minWidth: 2050,
-
       tableHeaders: [{ title: title, property: 'label', width: 140, type: 'tree' }],
       tableWidth: 240,
       ganttTableModules: [SvelteGanttTable],
@@ -66,7 +67,7 @@ const SvelteGanttReact = props => {
     if (!svelteGanttRef.current) return;
 
     svelteGanttRef.current.api.tasks.on.changed(task => {
-      onTaskChange(task[0], props.selectedGanttChart);
+      onTaskChange(task[0]);
     });
   }, [onTaskChange, props.selectedGanttChart]);
 
@@ -155,7 +156,6 @@ const mapStateToProps = state => {
   return {
     rows: state.gantt.rows,
     tasks: state.gantt.tasks,
-    selectedGanttChart: state.gantt.selectedGanttChart,
     error: state.gantt.error,
     loading: state.gantt.loading
   };
@@ -163,9 +163,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onFetchData: selectedGanttChart => dispatch(actions.fetchData(selectedGanttChart)),
-    onTaskChange: (task, selectedGanttChart) =>
-      dispatch(actions.taskChange(task, selectedGanttChart))
+    onFetchData: path => dispatch(actions.fetchData(path)),
+    onTaskChange: task => dispatch(actions.taskChange(task))
   };
 };
 
