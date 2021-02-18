@@ -1,10 +1,13 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 import classes from './GanttChartTypes.module.css';
+import * as actions from '../../store/actions';
 
 const GanttChartTypes = props => {
   const chartSelectedHandler = (event, chartType) => {
     event.preventDefault();
+    props.onSetSelectedGanttChart(chartType);
     props.history.push('/gantt-charts/' + chartType);
   };
 
@@ -26,4 +29,11 @@ const GanttChartTypes = props => {
   );
 };
 
-export default GanttChartTypes;
+const mapDispatchToProps = dispatch => {
+  return {
+    onSetSelectedGanttChart: selectedGanttChart =>
+      dispatch(actions.setSelectedGanttChart(selectedGanttChart))
+  };
+};
+
+export default connect(null, mapDispatchToProps)(GanttChartTypes);

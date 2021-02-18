@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { connect } from 'react-redux';
 import { SvelteGantt, SvelteGanttTable } from 'svelte-gantt';
 import moment from 'moment';
 
 import 'svelte-gantt/css/svelteGantt.css';
 import './SvelteGanttReact.css';
-
+import * as actions from '../../store/actions';
 
 const SvelteGanttReact = props => {
   const divRef = useRef(null);
@@ -13,65 +14,26 @@ const SvelteGanttReact = props => {
   const currentStart = moment('00:00', 'HH:mm');
   const currentEnd = moment('23:59', 'HH:mm');
 
-  const [rows, setRows] = useState([]);
-  const [tasks, setTasks] = useState([]);
+  const { onFetchData, onTaskChange } = props;
 
-  const [error, setError] = useState('');
-
-  let errorMessage = null;
   let title = null;
-
-  if (window.location.href.includes("FIELD_ENGINEER"))
-  {
-    title = "Engineers ";
-
+  if (window.location.href.includes('FIELD_ENGINEER')) {
+    title = 'Field Engineers';
+  } else if (window.location.href.includes('TENNIS_COURT')) {
+    title = 'Tennis Court';
   }
-  else if(window.location.href.includes("TENNIS_COURT")) {
-    title = "Tennis court ";
-  }
- 
 
   useEffect(() => {
-    fetch(`http://localhost:8080/getData/${props.location.pathname.split('/').pop()}`)
-      .then(res => {
-        if (res.status !== 200) {
-          throw new Error('Failed to fetch data.');
-        }
-        return res.json();
-      })
-      .then(resData => {
-        const rows = [];
-        const tasks = [];
-        for (let key in resData.rows) {
-          rows.push({
-            ...resData.rows[key]
-          });
-        }
-        for (let key in resData.tasks) {
-          tasks.push({
-            ...resData.tasks[key],
-            from: moment(resData.tasks[key].from),
-            to: moment(resData.tasks[key].to)
-          });
-        }
-        setRows(rows);
-        setTasks(tasks);
-      })
-      .catch(err => {
-        console.log(err);
-        setError(err.message);
-      });
-  }, [props.location.pathname]);
-
-  errorMessage = <p>{error}</p>;
+    onFetchData(props.selectedGanttChart);
+  }, [onFetchData, props.selectedGanttChart]);
 
   useEffect(() => {
     // Cannot do anything without the div.
     if (!divRef.current) return;
 
     const options = {
-      rows: rows,
-      tasks: tasks,
+      rows: props.rows,
+      tasks: props.tasks,
       headers: [
         { unit: 'day', format: 'dddd D MMMM', sticky: true },
         { unit: 'hour', format: 'HH:mm', sticky: true }
@@ -81,8 +43,7 @@ const SvelteGanttReact = props => {
       to: currentEnd,
       minWidth: 2050,
 
-
-      tableHeaders: [{ title: title , property: 'label', width: 140, type: 'tree' }],
+      tableHeaders: [{ title: title, property: 'label', width: 140, type: 'tree' }],
       tableWidth: 240,
       ganttTableModules: [SvelteGanttTable],
       taskContent: task => `${task.label} ${task.from.format('HH:mm')}`
@@ -98,37 +59,21 @@ const SvelteGanttReact = props => {
       // Update current element.
       svelteGanttRef.current.$set(options);
     }
-  }, [rows, tasks, currentStart, currentEnd]);
+  }, [props.rows, props.tasks, currentStart, currentEnd, title]);
 
   useEffect(() => {
+    // The Gantt chart needs to be mounted.
     if (!svelteGanttRef.current) return;
 
     svelteGanttRef.current.api.tasks.on.changed(task => {
-      fetch('http://localhost:8080/task', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          movedTask: task[0].task.model,
-          newRow:
-            task[0].sourceRow.model !== task[0].targetRow.model ? task[0].targetRow.model : null
-        })
-      })
-        .then(res => {
-          if (res.status !== 200 && res.status !== 201) {
-            throw new Error('Could not update row!');
-          }
-          return res.json();
-        })
-        .then(resData => {
-          console.log(resData);
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      onTaskChange(task[0], props.selectedGanttChart);
     });
-  }, []);
+  }, [onTaskChange, props.selectedGanttChart]);
+
+  let errorMessage = null;
+  if (props.error) {
+    errorMessage = <p>{props.error}</p>;
+  }
 
   const onSetPreviousDay = () => {
     currentStart.subtract(1, 'day');
@@ -180,9 +125,7 @@ const SvelteGanttReact = props => {
 
   return (
     <>
-      {error ? (
-        errorMessage
-      ) : (
+      {errorMessage || (
         <>
           <div className="gantt-controls">
             <button type="button" className="gantt-control-button" onClick={onSetPreviousDay}>
@@ -208,4 +151,22 @@ const SvelteGanttReact = props => {
   );
 };
 
-export default SvelteGanttReact;
+const mapStateToProps = state => {
+  return {
+    rows: state.gantt.rows,
+    tasks: state.gantt.tasks,
+    selectedGanttChart: state.gantt.selectedGanttChart,
+    error: state.gantt.error,
+    loading: state.gantt.loading
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onFetchData: selectedGanttChart => dispatch(actions.fetchData(selectedGanttChart)),
+    onTaskChange: (task, selectedGanttChart) =>
+      dispatch(actions.taskChange(task, selectedGanttChart))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SvelteGanttReact);
