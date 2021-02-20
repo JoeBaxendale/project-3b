@@ -192,8 +192,8 @@ const SvelteGanttReact = props => {
             <button type="button" className="gantt-control-button" onClick={onSetWeekView}>
               Week View
             </button>
+            {svelteGanttRef.current && <SvelteGanttAddBar gantt={svelteGanttRef.current} />}
           </div>
-          <SvelteGanttAddBar gantt={svelteGanttRef.current} />
           <div className="gantt-chart" ref={divRef} />
         </>
       )}
