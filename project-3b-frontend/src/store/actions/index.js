@@ -1,1 +1,1 @@
-export { fetchData, taskChange } from './gantt';
+export { fetchData, taskChange, setDemoData } from './gantt';

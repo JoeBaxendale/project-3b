@@ -42,6 +42,14 @@ export const taskChangeFail = error => {
   };
 };
 
+export const setDemoData = (rows, tasks) => {
+  return {
+    type: actionTypes.SET_DEMO_DATA,
+    rows: rows,
+    tasks: tasks
+  }
+}
+
 export const fetchData = path => {
   return async dispatch => {
     dispatch(fetchDataStart());

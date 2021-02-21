@@ -1,7 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Grid, TextareaAutosize, Typography } from '@material-ui/core';
 
 import classes from './DemoNewChart.module.css';
+import * as actions from '../../store/actions';
 
 const DemoNewChart = props => {
   return (
@@ -35,4 +37,10 @@ const DemoNewChart = props => {
   );
 };
 
-export default DemoNewChart;
+const mapDispatchToProps = dispatch => {
+  return {
+    onSetDemoData: (rows, tasks) => dispatch(actions.setDemoData(rows, tasks))
+  };
+};
+
+export default connect(null, mapDispatchToProps)(DemoNewChart);

@@ -25,6 +25,10 @@ const fetchDataFail = (state, action) => {
   return updateObject(state, { error: action.error, loading: false });
 };
 
+const setDemoData = (state, action) => {
+  return updateObject(state, {rows: action.rows, tasks: action.tasks})
+}
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.FETCH_DATA_START:
@@ -33,6 +37,8 @@ const reducer = (state = initialState, action) => {
       return fetchDataSuccess(state, action);
     case actionTypes.FETCH_DATA_FAIL:
       return fetchDataFail(state, action);
+    case actionTypes.SET_DEMO_DATA:
+      return setDemoData(state, action);
     default:
       return state;
   }
