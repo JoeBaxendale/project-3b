@@ -232,7 +232,7 @@ const SvelteGanttReact = props => {
           </div>
           <div className="gantt-chart" ref={divRef} />
           <button type="button" className="gantt-control-button" onClick={toggleJson}> Edit Json</button>
-          <pre className="json-display" >
+          <pre className="json-display" contentEditable={true}>
               {jsonFile}
           </pre>
         </>
