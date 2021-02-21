@@ -18,7 +18,7 @@ const SvelteGanttReact = props => {
 
   const [error, setError] = useState('');
 
-  const [jsonFile, setJsonFile] = useState('');
+  const [jsonFile, setJsonFile] = useState([]);
 
   //let jsonFile = '';
 
@@ -46,21 +46,34 @@ const SvelteGanttReact = props => {
       .then(resData => {
         const rows = [];
         const tasks = [];
+        const json = [];
+        json.push("rows: ");
         for (let key in resData.rows) {
+          json.push([resData.rows[key].id, " " + resData.rows[key].label]);
           rows.push({
             ...resData.rows[key]
           });
+
         }
+        json.push("tasks: ");
         for (let key in resData.tasks) {
-          tasks.push({
-            ...resData.tasks[key],
-            from: moment(resData.tasks[key].from),
-            to: moment(resData.tasks[key].to)
-          });
-        }
+        json.push([resData.tasks[key].id, resData.tasks[key].resourceId, resData.tasks[key].label,
+          resData.tasks[key].from, resData.tasks[key].from, resData.tasks[key].to]);
+        tasks.push({
+          ...resData.tasks[key],
+          from: moment(resData.tasks[key].from),
+          to: moment(resData.tasks[key].to)
+        });
+      }
         setRows(rows);
         setTasks(tasks);
-        setJsonFile(rows);
+        let newJson = [];
+        for(let i=0; i<(json.length);i++){
+          let newEntry =  json[i]  + "\n"
+          newJson.push(newEntry)
+          console.log(newJson)
+        }
+        setJsonFile(newJson);
       })
       .catch(err => {
         console.log(err);
@@ -219,7 +232,9 @@ const SvelteGanttReact = props => {
           </div>
           <div className="gantt-chart" ref={divRef} />
           <button type="button" className="gantt-control-button" onClick={toggleJson}> Edit Json</button>
-          <pre className="json-display" > aaaaaaaaaaa{ jsonFile.toString()} </pre>
+          <pre className="json-display" >
+              {jsonFile}
+          </pre>
         </>
       )}
     </>
