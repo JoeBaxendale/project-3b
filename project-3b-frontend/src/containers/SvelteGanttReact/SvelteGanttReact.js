@@ -19,6 +19,7 @@ const SvelteGanttReact = props => {
   const [error, setError] = useState('');
 
   const [jsonFile, setJsonFile] = useState([]);
+  const [defaultText, setDefaultText] = useState('');
 
   //let jsonFile = '';
 
@@ -71,7 +72,7 @@ const SvelteGanttReact = props => {
         for(let i=0; i<(json.length);i++){
           let newEntry =  json[i]  + "\n"
           newJson.push(newEntry)
-          console.log(newJson)
+
         }
         setJsonFile(newJson);
       })
@@ -197,13 +198,34 @@ const SvelteGanttReact = props => {
   };
 
   const toggleJson = () => {
-    console.log("yeee")
-    let element = document.getElementsByClassName("json-display");
-    console.log(element[0].style.visibility == "visible")
-    if(element[0].style.visibility == "visible") {
-      element[0].style.visibility = "hidden"
+    let element = document.getElementsByClassName("json-display")[0];
+    let defaultText = element.innerHTML;
+    setDefaultText(defaultText);
+    if(element.style.visibility == "visible") {
+      element.style.visibility = "hidden"
     }else{
-      element[0].style.visibility = "visible"
+      element.style.visibility = "visible"
+    }
+  }
+
+  const saveJsonChanges = () => {
+    let newJson = document.getElementsByClassName("json-display")[0].innerHTML;
+    let oldJson = defaultText;
+    if(newJson !== oldJson){
+      newJson = newJson.split("\n")
+      oldJson = oldJson.split("\n")
+      for(let i=0; i<newJson.length;i++){
+        if(newJson[i] !== oldJson[i]){
+          oldJson[i] = oldJson[i].split(",")
+          newJson[i] = newJson[i].split(",")
+          for(let j=0; j<newJson[i].length;j++){
+            if(newJson[i][j] !== oldJson[i][j]){
+              let saveID = oldJson[i][0]
+              let saveRow = newJson[i]
+            }
+          }
+        }
+      }
     }
   }
 
@@ -232,9 +254,10 @@ const SvelteGanttReact = props => {
           </div>
           <div className="gantt-chart" ref={divRef} />
           <button type="button" className="gantt-control-button" onClick={toggleJson}> Edit Json</button>
-          <pre className="json-display" contentEditable={true}>
+          <pre className="json-display" contentEditable={true} >
               {jsonFile}
           </pre>
+          <button type="button" className="gantt-control-button" onClick={saveJsonChanges}>Submit Changes</button>
         </>
       )}
     </>
