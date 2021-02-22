@@ -19,7 +19,7 @@ const SvelteGanttReact = props => {
   const [error, setError] = useState('');
 
   const [jsonFile, setJsonFile] = useState([]);
-  const [defaultText, setDefaultText] = useState('');
+  // const [defaultText, setDefaultText] = useState('');
 
   //let jsonFile = '';
 
@@ -56,7 +56,7 @@ const SvelteGanttReact = props => {
           });
 
         }
-        json.push("tasks: ");
+        json.push("tasks:");
         for (let key in resData.tasks) {
         json.push([resData.tasks[key].id, resData.tasks[key].resourceId, resData.tasks[key].label,
           resData.tasks[key].from, resData.tasks[key].from, resData.tasks[key].to]);
@@ -199,8 +199,6 @@ const SvelteGanttReact = props => {
 
   const toggleJson = () => {
     let element = document.getElementsByClassName("json-display")[0];
-    let defaultText = element.innerHTML;
-    setDefaultText(defaultText);
     if(element.style.visibility == "visible") {
       element.style.visibility = "hidden"
     }else{
@@ -208,26 +206,41 @@ const SvelteGanttReact = props => {
     }
   }
 
-  const saveJsonChanges = () => {
+  const applyJsonChanges = () => {
     let newJson = document.getElementsByClassName("json-display")[0].innerHTML;
-    let oldJson = defaultText;
-    if(newJson !== oldJson){
-      newJson = newJson.split("\n")
-      oldJson = oldJson.split("\n")
-      for(let i=0; i<newJson.length;i++){
-        if(newJson[i] !== oldJson[i]){
-          oldJson[i] = oldJson[i].split(",")
-          newJson[i] = newJson[i].split(",")
-          for(let j=0; j<newJson[i].length;j++){
-            if(newJson[i][j] !== oldJson[i][j]){
-              let saveID = oldJson[i][0]
-              let saveRow = newJson[i]
-            }
-          }
-        }
-      }
+    newJson = newJson.split("\n")
+    let newRows = []
+    let newTasks = []
+    for(let i=1; i<newJson.indexOf("tasks:"); i++){
+      let newRow = new Object();
+      newRow.id = newJson[i].split(",")[0];
+      newRow.label = newJson[i].split(",")[1];
+      newRows.push(newRow)
     }
+    for(let i=newJson.lastIndexOf("tasks:")+1; i<newJson.length; i++){
+      newTasks.push(newJson[i])
+    }
+    setRows(newRows)
+    // setTasks(newTasks)
   }
+    // let oldJson = defaultText;
+    // if(newJson !== oldJson){
+    //   newJson = newJson.split("\n")
+    //   oldJson = oldJson.split("\n")
+    //   for(let i=0; i<newJson.length;i++){
+    //     if(newJson[i] !== oldJson[i]){
+    //       oldJson[i] = oldJson[i].split(",")
+    //       newJson[i] = newJson[i].split(","
+    //       for(let j=0; j<newJson[i].length;j++){
+    //         if(newJson[i][j] !== oldJson[i][j]){
+    //           let saveID = oldJson[i][0]
+    //           let saveRow = newJson[i]
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+
 
   return (
     <>
@@ -257,7 +270,7 @@ const SvelteGanttReact = props => {
           <pre className="json-display" contentEditable={true} >
               {jsonFile}
           </pre>
-          <button type="button" className="gantt-control-button" onClick={saveJsonChanges}>Submit Changes</button>
+          <button type="button" className="gantt-control-button" onClick={applyJsonChanges}>Submit Changes</button>
         </>
       )}
     </>
