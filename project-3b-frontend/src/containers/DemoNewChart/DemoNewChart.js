@@ -23,6 +23,24 @@ const DemoNewChart = props => {
     props.history.push('/gantt-charts/new');
   };
 
+  const checkJsonStructure = () => {
+    if (typeof rowsInput !== 'string' || typeof tasksInput !== 'string') return false;
+    try {
+      const rowsResult = JSON.parse(rowsInput);
+      const tasksResult = JSON.parse(tasksInput);
+      const rowsType = Object.prototype.toString.call(rowsResult);
+      const tasksType = Object.prototype.toString.call(tasksResult);
+      return (
+        rowsType === '[object Object]' ||
+        rowsType === '[object Array]' ||
+        tasksType === '[object Object]' ||
+        tasksType === '[object Array]'
+      );
+    } catch (err) {
+      return false;
+    }
+  };
+
   return (
     <form onSubmit={demoChartHandler}>
       <Grid container>
@@ -48,7 +66,9 @@ const DemoNewChart = props => {
             style={{ width: '100%' }}
           />
         </Grid>
-        <button className={classes.DemoButton}>Demo</button>
+        <button className={classes.DemoButton} disabled={!checkJsonStructure()}>
+          Demo
+        </button>
       </Grid>
     </form>
   );
