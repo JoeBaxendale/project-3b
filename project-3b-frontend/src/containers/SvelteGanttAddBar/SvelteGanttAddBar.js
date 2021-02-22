@@ -8,6 +8,7 @@ const SvelteGanttAddBar = props => {
   let bar1 = null;
   let bar2 = null;
   let bar3 = null;
+  let i = 0;
   const { gantt } = props;
   if (window.location.href.includes('FIELD_ENGINEER')) {
     bar1 = 'Scheduled Shift';
@@ -23,11 +24,11 @@ const SvelteGanttAddBar = props => {
       gantt,
       onsuccess: (row, date, gantt) => {
         console.log(row.model.id, date.format());
-        const id = 5000 + Math.floor(Math.random() * 1000); //`5c0f66b979af55031b34710${i}`;
+        const id = i + 1; //5000 + Math.floor(Math.random() * 1000); //`5c0f66b979af55031b34710${i}`;
 
         gantt.updateTask({
           id,
-          label: ``, // call bar name
+          label: `${bar1}`,
           from: date,
           to: date.clone().add(3, 'hour'),
           classes: 'orange',
@@ -36,8 +37,6 @@ const SvelteGanttAddBar = props => {
       }
     });
   }, []);
-
-  console.log(gantt);
 
   return (
     <button type="button" ref={newTaskRef}>
