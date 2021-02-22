@@ -57,6 +57,8 @@ const SvelteGanttReact = props => {
         target: divRef.current,
         props: options
       });
+
+      svelteGanttRef.current.$set(options); // Temporary fix for when demoing new chart.
     } else {
       // Update current element.
       svelteGanttRef.current.$set(options);
@@ -70,7 +72,7 @@ const SvelteGanttReact = props => {
     svelteGanttRef.current.api.tasks.on.changed(task => {
       onTaskChange(task[0], lastPartOfUrl);
     });
-  }, [onTaskChange, props.selectedGanttChart, lastPartOfUrl]);
+  }, [onTaskChange, lastPartOfUrl]);
 
   const onSetPreviousDay = () => {
     currentStart.subtract(1, 'day');

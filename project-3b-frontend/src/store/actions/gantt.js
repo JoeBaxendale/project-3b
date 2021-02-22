@@ -47,17 +47,16 @@ export const setDemoData = (rows, tasks) => {
     type: actionTypes.SET_DEMO_DATA,
     rows: rows,
     tasks: tasks
-  }
-}
+  };
+};
 
 export const fetchData = path => {
   return async dispatch => {
-    dispatch(fetchDataStart());
-
     const rows = [];
     const tasks = [];
 
     if (path !== 'new') {
+      dispatch(fetchDataStart());
       try {
         const response = await fetch(`http://localhost:8080/getData/${path}`);
         const resData = await response.json();
@@ -85,8 +84,6 @@ export const fetchData = path => {
         dispatch(fetchDataFail(err.message));
       }
     }
-
-    // s
   };
 };
 

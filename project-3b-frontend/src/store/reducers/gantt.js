@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utility';
 
@@ -26,8 +28,13 @@ const fetchDataFail = (state, action) => {
 };
 
 const setDemoData = (state, action) => {
-  return updateObject(state, {rows: action.rows, tasks: action.tasks})
-}
+  return updateObject(state, {
+    rows: action.rows,
+    tasks: action.tasks.map(task =>
+      updateObject(task, { from: moment(task.from), to: moment(task.to) })
+    )
+  });
+};
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
