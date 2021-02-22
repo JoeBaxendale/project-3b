@@ -59,12 +59,13 @@ const SvelteGanttReact = props => {
         json.push("tasks:");
         for (let key in resData.tasks) {
         json.push([resData.tasks[key].id, resData.tasks[key].resourceId, resData.tasks[key].label,
-          resData.tasks[key].from, resData.tasks[key].from, resData.tasks[key].to]);
+          resData.tasks[key].from, resData.tasks[key].to]);
         tasks.push({
           ...resData.tasks[key],
           from: moment(resData.tasks[key].from),
           to: moment(resData.tasks[key].to)
         });
+          console.log(tasks)
       }
         setRows(rows);
         setTasks(tasks);
@@ -200,46 +201,39 @@ const SvelteGanttReact = props => {
   const toggleJson = () => {
     let element = document.getElementsByClassName("json-display")[0];
     if(element.style.visibility == "visible") {
-      element.style.visibility = "hidden"
+      element.style.visibility = "hidden";
     }else{
-      element.style.visibility = "visible"
+      element.style.visibility = "visible";
     }
   }
 
   const applyJsonChanges = () => {
     let newJson = document.getElementsByClassName("json-display")[0].innerHTML;
-    newJson = newJson.split("\n")
-    let newRows = []
-    let newTasks = []
+    newJson = newJson.split("\n");
+    let newRows = [];
+    let newTasks = [];
     for(let i=1; i<newJson.indexOf("tasks:"); i++){
       let newRow = new Object();
       newRow.id = newJson[i].split(",")[0];
       newRow.label = newJson[i].split(",")[1];
-      newRows.push(newRow)
+      newRows.push(newRow);
     }
-    for(let i=newJson.lastIndexOf("tasks:")+1; i<newJson.length; i++){
-      newTasks.push(newJson[i])
+    for(let i=newJson.lastIndexOf("tasks:")+1; i<newJson.length-1; i++){
+      let newTask = new Object();
+      let task = newJson[i].split(",");
+      newTask.id = task[0];
+      newTask.resourceId = parseInt(task[1]);
+      newTask.label = task[2];
+      newTask.from = moment(task[3]);
+      newTask.to = moment(task[4]);
+      console.log(newTask.to)
+      newTasks.push(newTask);
     }
-    setRows(newRows)
-    // setTasks(newTasks)
+    setRows(newRows);
+    setTasks(newTasks);
+    console.log(newTasks)
   }
-    // let oldJson = defaultText;
-    // if(newJson !== oldJson){
-    //   newJson = newJson.split("\n")
-    //   oldJson = oldJson.split("\n")
-    //   for(let i=0; i<newJson.length;i++){
-    //     if(newJson[i] !== oldJson[i]){
-    //       oldJson[i] = oldJson[i].split(",")
-    //       newJson[i] = newJson[i].split(","
-    //       for(let j=0; j<newJson[i].length;j++){
-    //         if(newJson[i][j] !== oldJson[i][j]){
-    //           let saveID = oldJson[i][0]
-    //           let saveRow = newJson[i]
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+
 
 
   return (
