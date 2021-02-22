@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Grid, TextareaAutosize, Typography } from '@material-ui/core';
+import moment from 'moment';
 
 import classes from './DemoNewChart.module.css';
 import * as actions from '../../store/actions';
@@ -12,7 +13,12 @@ const DemoNewChart = props => {
   const demoChartHandler = event => {
     event.preventDefault();
     const rows = JSON.parse(rowsInput);
-    const tasks = JSON.parse(tasksInput);
+    const tasks = JSON.parse(tasksInput, (key, value) => {
+      if (key === 'from' || key === 'to') {
+        return moment(value);
+      }
+      return value;
+    });
     props.onSetDemoData(rows, tasks);
     props.history.push('/gantt-charts/new');
   };
