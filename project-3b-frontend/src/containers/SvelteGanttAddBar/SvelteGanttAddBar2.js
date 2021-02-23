@@ -6,15 +6,15 @@ import classes from './SvelteGanttAddBar.module.css';
 const SvelteGanttAddBar = props => {
   const newTaskRef = useRef(null);
 
-  let bar1 = null;
+  let bar2 = null;
 
   const { gantt } = props;
   const lastPartOfUrl = props.location.pathname.split('/').pop();
 
   if (lastPartOfUrl === 'FIELD_ENGINEER') {
-    bar1 = 'Scheduled Shift';
+    bar2 = 'Absence';
   } else if (lastPartOfUrl === 'TENNIS_COURT') {
-    bar1 = 'Not Available';
+    bar2 = 'Available to Book';
   }
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const SvelteGanttAddBar = props => {
 
         gantt.updateTask({
           id,
-          label: `${bar1}`,
+          label: `${bar2}`,
           from: date,
           to: date.clone().add(3, 'hour'),
           classes: props.colour,
@@ -37,8 +37,8 @@ const SvelteGanttAddBar = props => {
 
   return (
     <div>
-      <button type="button" ref={newTaskRef} className={classes.Bar1}>
-        {bar1}
+      <button type="button" ref={newTaskRef} className={classes.Bar2}>
+        {bar2}
       </button>
     </div>
   );
