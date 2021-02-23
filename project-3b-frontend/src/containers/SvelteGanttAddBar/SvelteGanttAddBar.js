@@ -1,23 +1,28 @@
 import React, { useEffect, useRef } from 'react';
+import { withRouter } from 'react-router-dom';
 import { SvelteGanttExternal } from 'svelte-gantt';
 import classes from './SvelteGanttAddBar.module.css';
 
 const SvelteGanttAddBar = props => {
   const newTaskRef = useRef(null);
+
   let bar1 = null;
   let bar2 = null;
   let bar3 = null;
 
   const { gantt } = props;
-  if (window.location.href.includes('FIELD_ENGINEER')) {
+  const lastPartOfUrl = props.location.pathname.split('/').pop();
+
+  if (lastPartOfUrl === 'FIELD_ENGINEER') {
     bar1 = 'Scheduled Shift';
     bar2 = 'Absence';
     bar3 = 'Over Time';
-  } else if (window.location.href.includes('TENNIS_COURT')) {
+  } else if (lastPartOfUrl === 'TENNIS_COURT') {
     bar1 = 'Not Available';
     bar2 = 'Available to Book';
     bar3 = 'Tournament';
   }
+
   useEffect(() => {
     const external = new SvelteGanttExternal(newTaskRef.current, {
       gantt,
@@ -29,7 +34,7 @@ const SvelteGanttAddBar = props => {
           label: `${bar1}`,
           from: date,
           to: date.clone().add(3, 'hour'),
-          classes: 'orange',
+          classes: props.colour,
           resourceId: row.model.id
         });
       }
@@ -37,10 +42,12 @@ const SvelteGanttAddBar = props => {
   }, []);
 
   return (
-    <button type="button" ref={newTaskRef} className={classes.Bar1}>
-      {bar1}
-    </button>
+    <div>
+      <button type="button" ref={newTaskRef} className={classes.Bar1}>
+        {bar1}
+      </button>
+    </div>
   );
 };
 
-export default SvelteGanttAddBar;
+export default withRouter(SvelteGanttAddBar);

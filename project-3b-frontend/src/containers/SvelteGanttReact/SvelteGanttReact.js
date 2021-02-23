@@ -192,7 +192,13 @@ const SvelteGanttReact = props => {
             <button type="button" className="gantt-control-button" onClick={onSetWeekView}>
               Week View
             </button>
-            {svelteGanttRef.current && <SvelteGanttAddBar gantt={svelteGanttRef.current} />}
+            {svelteGanttRef.current && (
+              <>
+                <SvelteGanttAddBar gantt={svelteGanttRef.current} colour="orange" />
+                <SvelteGanttAddBar gantt={svelteGanttRef.current} colour="green" />
+                <SvelteGanttAddBar gantt={svelteGanttRef.current} colour="blue" />
+              </>
+            )}
           </div>
           <div className="gantt-chart" ref={divRef} />
         </>
