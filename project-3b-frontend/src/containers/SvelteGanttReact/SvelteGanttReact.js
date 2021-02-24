@@ -226,7 +226,15 @@ const SvelteGanttReact = props => {
       newTask.label = task[2];
       newTask.from = moment(task[3]);
       newTask.to = moment(task[4]);
-      console.log(newTask.to)
+      if(newTask.label== "Scheduled Shift" || newTask.label == "Available To Book"){
+        newTask.classes = "green"
+      }
+      if(newTask.label== "Overtime" || newTask.label == "Tournament"){
+        newTask.classes = "blue"
+      }
+      if(newTask.label== "Absence" || newTask.label == "Not Available"){
+        newTask.classes = "orange"
+      }
       newTasks.push(newTask);
     }
     setRows(newRows);
