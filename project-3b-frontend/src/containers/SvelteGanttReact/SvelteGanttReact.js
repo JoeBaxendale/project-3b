@@ -18,8 +18,7 @@ const SvelteGanttReact = props => {
   const [error, setError] = useState('');
 
   const [jsonFile, setJsonFile] = useState([]);
-  const [colours, setColours] = useState([]);
-
+  const [labelColours, setLabelColours] = useState([]);
   let errorMessage = null;
   let title = null;
 
@@ -49,7 +48,11 @@ const SvelteGanttReact = props => {
           });
         }
         json.push('tasks:');
+        let data = [];
         for (let key in resData.tasks) {
+          if (!data.includes(resData.tasks[key].label + ': ' + resData.tasks[key].classes + '\n')) {
+            data.push(resData.tasks[key].label + ': ' + resData.tasks[key].classes + '\n');
+          }
           json.push([
             resData.tasks[key].id,
             resData.tasks[key].resourceId,
@@ -63,7 +66,6 @@ const SvelteGanttReact = props => {
             from: moment(resData.tasks[key].from),
             to: moment(resData.tasks[key].to)
           });
-          console.log(tasks);
         }
         setRows(rows);
         setTasks(tasks);
@@ -73,6 +75,8 @@ const SvelteGanttReact = props => {
           newJson.push(newEntry);
         }
         setJsonFile(newJson);
+
+        setLabelColours(data);
       })
       .catch(err => {
         console.log(err);
@@ -206,17 +210,42 @@ const SvelteGanttReact = props => {
   const applyJsonChanges = () => {
     let newJson = document.getElementsByClassName('json-display')[0].innerHTML;
     newJson = newJson.split('\n');
+    let labelColoursChanged = false;
+    let oldLabelColours = [];
+    for (let i = 0; i < newJson.lastIndexOf('<br>rows: '); i++) {
+      for (let j in labelColours) {
+        oldLabelColours.push(labelColours[j].slice(0, -1));
+      }
+      if (!oldLabelColours.includes(newJson[i])) {
+        labelColours.splice(i, 1);
+        labelColours.push(newJson[i] + '\n');
+        labelColoursChanged = true;
+      }
+    }
     let newRows = [];
     let newTasks = [];
-    for (let i = 1; i < newJson.indexOf('tasks:'); i++) {
+    for (let i = newJson.lastIndexOf('<br>rows: ') + 1; i < newJson.indexOf('tasks:'); i++) {
       let newRow = new Object();
       newRow.id = newJson[i].split(',')[0];
       newRow.label = newJson[i].split(',')[1];
       newRows.push(newRow);
     }
+
+    let labelsList = [];
+    let coloursList = [];
+    if (labelColoursChanged) {
+      for (let j in labelColours) {
+        let label = labelColours[j].slice(0, labelColours[j].indexOf(':'));
+        labelsList.push(label);
+        let colour = labelColours[j].slice(labelColours[j].indexOf(':') + 1, -1);
+        coloursList.push(colour);
+      }
+    }
     for (let i = newJson.lastIndexOf('tasks:') + 1; i < newJson.length - 1; i++) {
       let newTask = new Object();
       let task = newJson[i].split(',');
+      if (!labelsList.includes(newTask.label)) {
+      }
       newTask.id = task[0];
       newTask.resourceId = parseInt(task[1]);
       newTask.label = task[2];
@@ -258,6 +287,8 @@ const SvelteGanttReact = props => {
             Edit Json
           </button>
           <pre className="json-display" contentEditable={true}>
+            {labelColours}
+            <br></br>
             {jsonFile}
           </pre>
           <button type="button" className="gantt-control-button" onClick={applyJsonChanges}>
