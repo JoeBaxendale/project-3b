@@ -57,8 +57,6 @@ const SvelteGanttReact = props => {
         target: divRef.current,
         props: options
       });
-
-      svelteGanttRef.current.$set(options); // Temporary fix for when demoing new chart.
     } else {
       // Update current element.
       svelteGanttRef.current.$set(options);
