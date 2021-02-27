@@ -3,6 +3,7 @@
     font-size: 14px;
     font-weight: 300;
     padding: 6px 12px;
+    background-color: rgb(238, 161, 45);
     color: #fff;
     cursor: pointer;
     transition: background 0.2s;
@@ -21,6 +22,13 @@
     transition: background 0.2s;
     outline: none;
     margin: 2px;
+}
+.Bar1:hover {
+    background-color: rgb(238, 161, 45);
+}
+
+.Bar1:active {
+    background-color: rgb(219, 149, 45);
 }
 
 .Bar2:hover {

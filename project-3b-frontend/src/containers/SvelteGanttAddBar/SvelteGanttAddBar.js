@@ -66,7 +66,7 @@ const SvelteGanttAddBar = props => {
 
   return (
     <div>
-      <button type="button" ref={newTaskRef} className={classes.Bar2}>
+      <button type="button" ref={newTaskRef} className={classes[dragButtonClass]}>
         {dragButtonLabel}
       </button>
     </div>
