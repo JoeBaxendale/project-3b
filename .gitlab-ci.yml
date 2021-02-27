@@ -1,0 +1,60 @@
+image: node:12-alpine
+
+stages:
+  - build
+  - test
+  - deploy
+
+cache:
+  paths:
+    - ./project-3b-frontend/node_modules/
+    - ./project-3b-backend/node_modules/
+
+build_react:
+  stage: build
+  tags:
+    - comsc-ci
+  script:
+    - cd ./project-3b-frontend
+    - npm install
+    - npm run build
+  # only:
+  #   - master
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - ./project-3b-frontend/node_modules/
+      - ./project-3b-frontend/build/
+
+build_node:
+  stage: build
+  tags:
+    - comsc-ci
+  script:
+    - cd ./project-3b-backend
+    - npm install
+  # only:
+  #   - master
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - ./project-3b-backend/node_modules/
+# test_react:
+#   stage: test
+#   tags:
+#     - comsc-ci
+#   script:
+#     - cd ./project-3b-frontend
+#     - CI=true npm test
+#   only:
+#     - master
+
+# test_node:
+#   stage: test
+#   tags:
+#     - comsc-ci
+#   script:
+#     - cd ./project-3b-backend
+#     - CI=true npm test
+#   only:
+#     - master
