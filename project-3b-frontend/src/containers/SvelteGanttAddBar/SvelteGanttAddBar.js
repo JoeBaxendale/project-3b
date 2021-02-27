@@ -1,20 +1,49 @@
 import React, { useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import { SvelteGanttExternal } from 'svelte-gantt';
+
 import classes from './SvelteGanttAddBar.module.css';
 
 const SvelteGanttAddBar = props => {
   const newTaskRef = useRef(null);
 
-  let bar1 = null;
-
   const { gantt } = props;
   const lastPartOfUrl = props.location.pathname.split('/').pop();
 
+  let dragButtonLabel = '';
+  let dragButtonClass = '';
+
   if (lastPartOfUrl === 'FIELD_ENGINEER') {
-    bar1 = 'Scheduled Shift';
-  } else if (lastPartOfUrl === 'TENNIS_COURT') {
-    bar1 = 'Not Available';
+    switch (props.colour) {
+      case 'orange':
+        dragButtonLabel = 'Absence';
+        dragButtonClass = 'Bar1';
+        break;
+      case 'green':
+        dragButtonLabel = 'Scheduled Shift';
+        dragButtonClass = 'Bar2';
+        break;
+      case 'blue':
+        dragButtonLabel = 'Overtime';
+        dragButtonClass = 'Bar3';
+        break;
+    }
+  }
+  if (lastPartOfUrl === 'TENNIS_COURT') {
+    switch (props.colour) {
+      case 'orange':
+        dragButtonLabel = 'Available to Book';
+        dragButtonClass = 'Bar1';
+        break;
+      case 'green':
+        dragButtonLabel = 'Not Available';
+        dragButtonClass = 'Bar2';
+        break;
+      case 'blue':
+        dragButtonLabel = 'Tournament';
+        dragButtonClass = 'Bar3';
+        break;
+    }
   }
 
   useEffect(() => {
@@ -25,7 +54,7 @@ const SvelteGanttAddBar = props => {
 
         gantt.updateTask({
           id,
-          label: `${bar1}`,
+          label: `${dragButtonLabel}`,
           from: date,
           to: date.clone().add(3, 'hour'),
           classes: props.colour,
@@ -37,8 +66,8 @@ const SvelteGanttAddBar = props => {
 
   return (
     <div>
-      <button type="button" ref={newTaskRef} className={classes.Bar1}>
-        {bar1}
+      <button type="button" ref={newTaskRef} className={classes.Bar2}>
+        {dragButtonLabel}
       </button>
     </div>
   );

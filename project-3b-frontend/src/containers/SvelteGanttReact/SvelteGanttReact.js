@@ -5,8 +5,6 @@ import moment from 'moment';
 import 'svelte-gantt/css/svelteGantt.css';
 import './SvelteGanttReact.css';
 import SvelteGanttAddBar from '../SvelteGanttAddBar/SvelteGanttAddBar';
-import SvelteGanttAddBar2 from '../SvelteGanttAddBar/SvelteGanttAddBar2';
-import SvelteGanttAddBar3 from '../SvelteGanttAddBar/SvelteGanttAddBar3';
 
 const SvelteGanttReact = props => {
   const divRef = useRef(null);
@@ -197,8 +195,8 @@ const SvelteGanttReact = props => {
             {svelteGanttRef.current && (
               <>
                 <SvelteGanttAddBar gantt={svelteGanttRef.current} colour="orange" />
-                <SvelteGanttAddBar2 gantt={svelteGanttRef.current} colour="green" />
-                <SvelteGanttAddBar3 gantt={svelteGanttRef.current} colour="blue" />
+                <SvelteGanttAddBar gantt={svelteGanttRef.current} colour="green" />
+                <SvelteGanttAddBar gantt={svelteGanttRef.current} colour="blue" />
               </>
             )}
           </div>

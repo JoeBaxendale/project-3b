@@ -1,10 +1,8 @@
-
 .Bar1 {
     border: transparent;
     font-size: 14px;
     font-weight: 300;
     padding: 6px 12px;
-    background: rgb(254, 172, 49);
     color: #fff;
     cursor: pointer;
     transition: background 0.2s;
@@ -12,14 +10,7 @@
     margin: 2px;
 }
 
-.Bar1:hover {
-    background-color: rgb(238, 161, 45);
-}
-.Bar1:active {
-    background-color: rgb(219, 149, 45);
-}
-
-.Bar2{
+.Bar2 {
     border: transparent;
     font-size: 14px;
     font-weight: 300;
@@ -40,7 +31,7 @@
     background-color: rgb(121, 150, 125);
 }
 
-.Bar3{
+.Bar3 {
     border: transparent;
     font-size: 14px;
     font-weight: 300;
