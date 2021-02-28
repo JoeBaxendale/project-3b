@@ -208,8 +208,8 @@ const SvelteGanttReact = props => {
   };
 
   const applyJsonChanges = () => {
-    let newJson = document.getElementsByClassName('json-display')[0].innerHTML;
-    newJson = newJson.split('\n');
+    let element = document.getElementsByClassName('json-display')[0].innerHTML;
+    let newJson = element.split('\n');
     let oldLabels = [];
     for (let i = 0; i < newJson.lastIndexOf('<br>rows: '); i++) {
       for (let j in labels) {
@@ -226,12 +226,18 @@ const SvelteGanttReact = props => {
         for (let i = newJson.lastIndexOf('tasks:') + 1; i < newJson.length - 1; i++) {
           let task = newJson[i].split(',');
           if (task[2] === replacedLabel.slice(0, replacedLabel.indexOf(':'))) {
-            task[2] = labels[labels.length - 1];
+            task[2] = labels[labels.length - 1].slice(0, labels[labels.length - 1].indexOf(':'));
             newJson[i] = task.toString();
           }
         }
       }
     }
+    for (let i = newJson.indexOf('<br> rows:'); i < newJson.length; i++) {
+      newJson[i] = newJson[i] + '\n';
+    }
+    let newJsonWithoutLabels = newJson.slice(newJson.indexOf('<br>rows: '), newJson.length);
+    console.log(newJsonWithoutLabels);
+    setJsonFile(newJsonWithoutLabels);
     for (let i in labels) {
       if (labels[i] === '') {
         labels.splice(i, 1);
@@ -267,6 +273,7 @@ const SvelteGanttReact = props => {
       newTask.classes = task[5];
       newTasks.push(newTask);
     }
+    console.log(newTasks);
     setRows(newRows);
     setTasks(newTasks);
   };
