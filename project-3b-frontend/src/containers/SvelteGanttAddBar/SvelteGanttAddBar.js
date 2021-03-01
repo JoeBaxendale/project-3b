@@ -27,6 +27,9 @@ const SvelteGanttAddBar = props => {
         dragButtonLabel = 'Overtime';
         dragButtonClass = 'Bar3';
         break;
+      default:
+        dragButtonLabel = 'Task';
+        dragButtonClass = 'Bar1';
     }
   }
   if (lastPartOfUrl === 'TENNIS_COURT') {
@@ -43,6 +46,9 @@ const SvelteGanttAddBar = props => {
         dragButtonLabel = 'Tournament';
         dragButtonClass = 'Bar3';
         break;
+      default:
+        dragButtonLabel = 'Task';
+        dragButtonClass = 'Bar1';
     }
   }
 
@@ -51,10 +57,9 @@ const SvelteGanttAddBar = props => {
       gantt,
       onsuccess: (row, date, gantt) => {
         const id = 5000 + Math.floor(Math.random() * 1000);
-
         gantt.updateTask({
           id,
-          label: `${dragButtonLabel}`,
+          label: dragButtonLabel,
           from: date,
           to: date.clone().add(3, 'hour'),
           classes: props.colour,
@@ -62,7 +67,7 @@ const SvelteGanttAddBar = props => {
         });
       }
     });
-  }, []);
+  }, [gantt, dragButtonLabel, props.colour]);
 
   return (
     <div>
