@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import 'svelte-gantt/css/svelteGantt.css';
 import './SvelteGanttReact.css';
-
+import SvelteGanttAddBar from '../SvelteGanttAddBar/SvelteGanttAddBar';
 
 const SvelteGanttReact = props => {
   const divRef = useRef(null);
@@ -26,15 +26,11 @@ const SvelteGanttReact = props => {
   let errorMessage = null;
   let title = null;
 
-  if (window.location.href.includes("FIELD_ENGINEER"))
-  {
-    title = "Engineers ";
-
+  if (window.location.href.includes('FIELD_ENGINEER')) {
+    title = 'Engineers ';
+  } else if (window.location.href.includes('TENNIS_COURT')) {
+    title = 'Tennis court ';
   }
-  else if(window.location.href.includes("TENNIS_COURT")) {
-    title = "Tennis court ";
-  }
- 
 
   useEffect(() => {
     fetch(`http://localhost:8080/getData/${props.location.pathname.split('/').pop()}`)
@@ -101,8 +97,7 @@ const SvelteGanttReact = props => {
       to: currentEnd,
       minWidth: 2050,
 
-
-      tableHeaders: [{ title: title , property: 'label', width: 140, type: 'tree' }],
+      tableHeaders: [{ title: title, property: 'label', width: 140, type: 'tree' }],
       tableWidth: 240,
       ganttTableModules: [SvelteGanttTable],
       taskContent: task => `${task.label} ${task.from.format('HH:mm')}`
@@ -118,7 +113,7 @@ const SvelteGanttReact = props => {
       // Update current element.
       svelteGanttRef.current.$set(options);
     }
-  }, [rows, tasks, currentStart, currentEnd]);
+  }, [rows, tasks, currentStart, currentEnd, title]);
 
   useEffect(() => {
     if (!svelteGanttRef.current) return;
@@ -263,9 +258,13 @@ const SvelteGanttReact = props => {
             <button type="button" className="gantt-control-button" onClick={onSetWeekView}>
               Week View
             </button>
-            <button type="button" className="gantt-control-button" id="new-task">
-              Add New Bar
-            </button>
+            {svelteGanttRef.current && (
+              <>
+                <SvelteGanttAddBar gantt={svelteGanttRef.current} colour="orange" />
+                <SvelteGanttAddBar gantt={svelteGanttRef.current} colour="green" />
+                <SvelteGanttAddBar gantt={svelteGanttRef.current} colour="blue" />
+              </>
+            )}
           </div>
           <div className="gantt-chart" ref={divRef} />
           <button type="button" className="gantt-control-button" onClick={toggleJson}> Edit Json</button>
