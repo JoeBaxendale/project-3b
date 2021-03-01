@@ -3,6 +3,7 @@ image: node:12-alpine
 stages:
   - build
   - test
+  - dockerise
   - deploy
 
 cache:
@@ -18,8 +19,8 @@ build_react:
     - cd ./project-3b-frontend
     - npm install
     - npm run build
-  # only:
-  #   - master
+  only:
+    - master
   artifacts:
     expire_in: 1 hour
     paths:
@@ -33,12 +34,13 @@ build_node:
   script:
     - cd ./project-3b-backend
     - npm install
-  # only:
-  #   - master
+  only:
+    - master
   artifacts:
     expire_in: 1 hour
     paths:
       - ./project-3b-backend/node_modules/
+
 # test_react:
 #   stage: test
 #   tags:
@@ -58,3 +60,38 @@ build_node:
 #     - CI=true npm test
 #   only:
 #     - master
+
+docker_image:
+  image: docker:latest
+  services:
+    - docker:dind
+  stage: dockerise
+  tags:
+    - comsc-ci
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.git.cf.ac.uk
+    - cd ./project-3b-frontend
+    - docker build -f Dockerfile.prod -t registry.git.cf.ac.uk/c1888037/project-3b .
+    - docker push registry.git.cf.ac.uk/c1888037/project-3b
+  # only:
+  #   - master
+
+openshift_deployment:
+  image: openshift/origin-cli
+  stage: deploy
+  tags:
+    - comsc-ci
+  script:
+    # - wget https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz
+    # - tar xvzf oc.tar.gz
+    # - rm oc.tar.gz
+    # - mv oc kubectl /usr/local/bin/
+    - oc login https://openshift.cs.cf.ac.uk:443 --token=$CI_OPENSHIFT_TOKEN
+    # - oc create secret docker-registry docker-registry --docker-server=registry.git.cf.ac.uk --docker-username=C1888037 --docker-password=$CI_PASSWORD --docker-email=bhalal@cardiff.ac.uk
+    # - oc create secret docker-registry git --docker-server=https://git.cardiff.ac.uk --docker-username=C1888037 --docker-password=$CI_PASSWORD --docker-email=bhalal@cardiff.ac.uk
+    - oc secrets link default docker-registry git docker-registry --for=pull
+    - oc import-image registry.git.cf.ac.uk/c1888037/project-3b --confirm
+    - oc get service workforce-planning || oc new-app project-3b --name workforce-planning
+    - oc get service workforce-planning || oc expose service workforce-planning
+  # only:
+  #   - master
