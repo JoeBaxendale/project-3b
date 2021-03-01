@@ -18,6 +18,11 @@ const SvelteGanttReact = props => {
 
   const [error, setError] = useState('');
 
+  const [jsonFile, setJsonFile] = useState([]);
+  // const [defaultText, setDefaultText] = useState('');
+
+  //let jsonFile = '';
+
   let errorMessage = null;
   let title = null;
 
@@ -42,20 +47,35 @@ const SvelteGanttReact = props => {
       .then(resData => {
         const rows = [];
         const tasks = [];
+        const json = [];
+        json.push("rows: ");
         for (let key in resData.rows) {
+          json.push([resData.rows[key].id, " " + resData.rows[key].label]);
           rows.push({
             ...resData.rows[key]
           });
+
         }
+        json.push("tasks:");
         for (let key in resData.tasks) {
-          tasks.push({
-            ...resData.tasks[key],
-            from: moment(resData.tasks[key].from),
-            to: moment(resData.tasks[key].to)
-          });
-        }
+        json.push([resData.tasks[key].id, resData.tasks[key].resourceId, resData.tasks[key].label,
+          resData.tasks[key].from, resData.tasks[key].to]);
+        tasks.push({
+          ...resData.tasks[key],
+          from: moment(resData.tasks[key].from),
+          to: moment(resData.tasks[key].to)
+        });
+          console.log(tasks)
+      }
         setRows(rows);
         setTasks(tasks);
+        let newJson = [];
+        for(let i=0; i<(json.length);i++){
+          let newEntry =  json[i]  + "\n"
+          newJson.push(newEntry)
+
+        }
+        setJsonFile(newJson);
       })
       .catch(err => {
         console.log(err);
@@ -178,6 +198,52 @@ const SvelteGanttReact = props => {
     });
   };
 
+  const toggleJson = () => {
+    let element = document.getElementsByClassName("json-display")[0];
+    if(element.style.visibility == "visible") {
+      element.style.visibility = "hidden";
+    }else{
+      element.style.visibility = "visible";
+    }
+  }
+
+  const applyJsonChanges = () => {
+    let newJson = document.getElementsByClassName("json-display")[0].innerHTML;
+    newJson = newJson.split("\n");
+    let newRows = [];
+    let newTasks = [];
+    for(let i=1; i<newJson.indexOf("tasks:"); i++){
+      let newRow = new Object();
+      newRow.id = newJson[i].split(",")[0];
+      newRow.label = newJson[i].split(",")[1];
+      newRows.push(newRow);
+    }
+    for(let i=newJson.lastIndexOf("tasks:")+1; i<newJson.length-1; i++){
+      let newTask = new Object();
+      let task = newJson[i].split(",");
+      newTask.id = task[0];
+      newTask.resourceId = parseInt(task[1]);
+      newTask.label = task[2];
+      newTask.from = moment(task[3]);
+      newTask.to = moment(task[4]);
+      if(newTask.label== "Scheduled Shift" || newTask.label == "Available To Book"){
+        newTask.classes = "green"
+      }
+      if(newTask.label== "Overtime" || newTask.label == "Tournament"){
+        newTask.classes = "blue"
+      }
+      if(newTask.label== "Absence" || newTask.label == "Not Available"){
+        newTask.classes = "orange"
+      }
+      newTasks.push(newTask);
+    }
+    setRows(newRows);
+    setTasks(newTasks);
+    console.log(newTasks)
+  }
+
+
+
   return (
     <>
       {error ? (
@@ -202,6 +268,11 @@ const SvelteGanttReact = props => {
             </button>
           </div>
           <div className="gantt-chart" ref={divRef} />
+          <button type="button" className="gantt-control-button" onClick={toggleJson}> Edit Json</button>
+          <pre className="json-display" contentEditable={true} >
+              {jsonFile}
+          </pre>
+          <button type="button" className="gantt-control-button" onClick={applyJsonChanges}>Submit Changes</button>
         </>
       )}
     </>
