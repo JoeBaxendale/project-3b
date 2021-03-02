@@ -88,7 +88,8 @@ const SvelteGanttReact = props => {
         props.tasks[key].resourceId,
         props.tasks[key].label,
         props.tasks[key].from,
-        props.tasks[key].to
+        props.tasks[key].to,
+        props.tasks[key].classes
       ]);
     }
     let newJson = [];
@@ -171,17 +172,9 @@ const SvelteGanttReact = props => {
       newTask.id = task[0];
       newTask.resourceId = task[1];
       newTask.label = task[2];
-      newTask.from = moment(task[3], 'HH:mm');
-      newTask.to = moment(task[4], 'HH:mm');
-      if (newTask.label === 'Absence' || newTask.label === 'Not Available') {
-        newTask.classes = 'orange';
-      }
-      if (newTask.label === 'Scheduled Shift' || newTask.label === 'Available To Book') {
-        newTask.classes = 'green';
-      }
-      if (newTask.label === 'Overtime' || newTask.label === 'Tournament') {
-        newTask.classes = 'blue';
-      }
+      newTask.from = moment(task[3]);
+      newTask.to = moment(task[4]);
+      newTask.classes = task[5];
       newTasks.push(newTask);
     }
     props.onSetDemoData(newRows, newTasks);
