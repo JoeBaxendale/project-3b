@@ -93,11 +93,12 @@ openshift_deployment:
     # - rm oc.tar.gz
     # - mv oc kubectl /usr/local/bin/
     - oc login https://openshift.cs.cf.ac.uk:443 --token=$CI_OPENSHIFT_TOKEN
+    - oc project workforce-planning-project || oc new-project workforce-planning-project
     # - oc create secret docker-registry docker-registry --docker-server=registry.git.cf.ac.uk --docker-username=C1888037 --docker-password=$CI_PASSWORD --docker-email=bhalal@cardiff.ac.uk
     # - oc create secret docker-registry git --docker-server=https://git.cardiff.ac.uk --docker-username=C1888037 --docker-password=$CI_PASSWORD --docker-email=bhalal@cardiff.ac.uk
     - oc secrets link default docker-registry git docker-registry --for=pull
     - oc import-image registry.git.cf.ac.uk/c1888037/project-3b --confirm
     - oc get service workforce-planning || oc new-app project-3b --name workforce-planning
-    - oc get service workforce-planning || oc expose service workforce-planning
+    - oc get service workforce-planning || oc expose service workforce-planning --port 3000
   # only:
   #   - master
