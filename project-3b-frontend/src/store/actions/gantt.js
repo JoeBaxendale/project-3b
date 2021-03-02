@@ -1,6 +1,7 @@
 import moment from 'moment';
 
 import * as actionTypes from './actionTypes';
+import { BACKEND_URL } from '../../shared/utility';
 
 export const fetchDataStart = () => {
   return {
@@ -58,7 +59,7 @@ export const fetchData = path => {
     if (path !== 'new') {
       dispatch(fetchDataStart());
       try {
-        const response = await fetch(`http://localhost:8080/getData/${path}`);
+        const response = await fetch(`${BACKEND_URL}/getData/${path}`);
         const resData = await response.json();
 
         if (!response.ok) {
@@ -93,7 +94,7 @@ export const taskChange = (taskInfo, path) => {
 
     if (path !== 'new') {
       try {
-        const response = await fetch('http://localhost:8080/task', {
+        const response = await fetch(`${BACKEND_URL}/task`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json'
