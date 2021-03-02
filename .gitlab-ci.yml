@@ -80,7 +80,25 @@ heroku_deployment:
     - docker login -u _ -p $HEROKU_TOKEN registry.heroku.com
     # Deploy backend first as frontend depends on it
     - cd ./project-3b-backend
-    # TODO: ADD BACKEND DEPLOYMENT - LC
+    - docker build -f Dockerfile --iidfile imageid.txt -t registry.heroku.com/workforce-planning-api .
+    - docker push registry.heroku.com/workforce-planning-api
+    - |
+      curl -X PATCH https://api.heroku.com/apps/workforce-planning-api/formation \
+        -d '{
+        "updates": [
+          {
+            "type": "web",
+            "docker_image": "'$(cat imageid.txt)'"
+          },
+          {
+            "type": "worker",
+            "docker_image": "'$(cat imageid.txt)'"
+          }
+        ]
+      }' \
+        -H "Authorization: Bearer ${HEROKU_TOKEN}" \
+        -H "Content-Type: application/json" \
+        -H "Accept: application/vnd.heroku+json; version=3.docker-releases"
     - cd ../project-3b-frontend
     - docker build -f Dockerfile.prod --iidfile imageid.txt -t registry.heroku.com/workforce-planning .
     - docker push registry.heroku.com/workforce-planning
