@@ -1,0 +1,123 @@
+image: node:12-alpine
+
+stages:
+  - build
+  - test
+  - deploy
+
+cache:
+  paths:
+    - ./project-3b-frontend/node_modules/
+    - ./project-3b-backend/node_modules/
+
+build_react:
+  stage: build
+  tags:
+    - comsc-ci
+  script:
+    - cd ./project-3b-frontend
+    - npm install
+    - npm run build
+  only:
+    - master
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - ./project-3b-frontend/node_modules/
+      - ./project-3b-frontend/build/
+
+build_node:
+  stage: build
+  tags:
+    - comsc-ci
+  script:
+    - cd ./project-3b-backend
+    - npm install
+  only:
+    - master
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - ./project-3b-backend/node_modules/
+
+# test_react:
+#   stage: test
+#   tags:
+#     - comsc-ci
+#   script:
+#     - cd ./project-3b-frontend
+#     - CI=true npm test
+#   only:
+#     - master
+
+# test_node:
+#   stage: test
+#   tags:
+#     - comsc-ci
+#   script:
+#     - cd ./project-3b-backend
+#     - CI=true npm test
+#   only:
+#     - master
+
+heroku_deployment:
+  image: docker:latest
+  services:
+    - docker:dind
+  stage: deploy
+  variables:
+    # Tell docker CLI how to talk to Docker daemon; see
+    # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ''
+  before_script:
+    - apk add --no-cache curl bash nodejs
+    - curl https://cli-assets.heroku.com/install.sh | sh
+  tags:
+    - comsc-ci
+  script:
+    - docker login -u _ -p $HEROKU_TOKEN registry.heroku.com
+    # Deploy backend first as frontend depends on it
+    - cd ./project-3b-backend
+    - docker build -f Dockerfile --iidfile imageid.txt -t registry.heroku.com/workforce-planning-api .
+    - docker push registry.heroku.com/workforce-planning-api
+    - |
+      curl -X PATCH https://api.heroku.com/apps/workforce-planning-api/formation \
+        -d '{
+        "updates": [
+          {
+            "type": "web",
+            "docker_image": "'$(cat imageid.txt)'"
+          },
+          {
+            "type": "worker",
+            "docker_image": "'$(cat imageid.txt)'"
+          }
+        ]
+      }' \
+        -H "Authorization: Bearer ${HEROKU_TOKEN}" \
+        -H "Content-Type: application/json" \
+        -H "Accept: application/vnd.heroku+json; version=3.docker-releases"
+    - cd ../project-3b-frontend
+    - docker build -f Dockerfile.prod --iidfile imageid.txt -t registry.heroku.com/workforce-planning .
+    - docker push registry.heroku.com/workforce-planning
+    - |
+      curl -X PATCH https://api.heroku.com/apps/workforce-planning/formation \
+        -d '{
+        "updates": [
+          {
+            "type": "web",
+            "docker_image": "'$(cat imageid.txt)'"
+          },
+          {
+            "type": "worker",
+            "docker_image": "'$(cat imageid.txt)'"
+          }
+        ]
+      }' \
+        -H "Authorization: Bearer ${HEROKU_TOKEN}" \
+        -H "Content-Type: application/json" \
+        -H "Accept: application/vnd.heroku+json; version=3.docker-releases"
+  only:
+    - master
