@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { SvelteGantt, SvelteGanttTable } from 'svelte-gantt';
 import moment from 'moment';
 
+import SvelteGanttAddBar from '../SvelteGanttAddBar/SvelteGanttAddBar';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import 'svelte-gantt/css/svelteGantt.css';
 import './SvelteGanttReact.css';
@@ -18,6 +19,8 @@ const SvelteGanttReact = props => {
   const { onFetchData, onTaskChange } = props;
 
   const lastPartOfUrl = props.location.pathname.split('/').pop();
+
+  const [jsonFile, setJsonFile] = useState([]);
 
   let title = null;
   if (lastPartOfUrl === 'FIELD_ENGINEER') {
@@ -72,6 +75,31 @@ const SvelteGanttReact = props => {
     });
   }, [onTaskChange, lastPartOfUrl]);
 
+  useEffect(() => {
+    const json = [];
+    json.push('rows: ');
+    for (let key in props.rows) {
+      json.push([props.rows[key].id, ' ' + props.rows[key].label]);
+    }
+    json.push('tasks:');
+    for (let key in props.tasks) {
+      json.push([
+        props.tasks[key].id,
+        props.tasks[key].resourceId,
+        props.tasks[key].label,
+        props.tasks[key].from,
+        props.tasks[key].to,
+        props.tasks[key].classes
+      ]);
+    }
+    let newJson = [];
+    for (let i = 0; i < json.length; i++) {
+      let newEntry = json[i] + '\n';
+      newJson.push(newEntry);
+    }
+    setJsonFile(newJson);
+  }, [props.rows, props.tasks]);
+
   const onSetPreviousDay = () => {
     currentStart.subtract(1, 'day');
     currentEnd.subtract(1, 'day');
@@ -120,6 +148,38 @@ const SvelteGanttReact = props => {
     });
   };
 
+  const toggleJson = () => {
+    let element = document.getElementsByClassName('json-display')[0];
+    element.style.visibility === 'visible'
+      ? (element.style.visibility = 'hidden')
+      : (element.style.visibility = 'visible');
+  };
+
+  const applyJsonChanges = () => {
+    let newJson = document.getElementsByClassName('json-display')[0].innerHTML;
+    newJson = newJson.split('\n');
+    let newRows = [];
+    let newTasks = [];
+    for (let i = 1; i < newJson.indexOf('tasks:'); i++) {
+      let newRow = {};
+      newRow.id = newJson[i].split(',')[0];
+      newRow.label = newJson[i].split(',')[1];
+      newRows.push(newRow);
+    }
+    for (let i = newJson.lastIndexOf('tasks:') + 1; i < newJson.length - 1; i++) {
+      let newTask = {};
+      let task = newJson[i].split(',');
+      newTask.id = task[0];
+      newTask.resourceId = task[1];
+      newTask.label = task[2];
+      newTask.from = moment(task[3]);
+      newTask.to = moment(task[4]);
+      newTask.classes = task[5];
+      newTasks.push(newTask);
+    }
+    props.onSetDemoData(newRows, newTasks);
+  };
+
   return (
     <>
       {props.loading && <Spinner />}
@@ -140,11 +200,28 @@ const SvelteGanttReact = props => {
             <button type="button" className="gantt-control-button" onClick={onSetWeekView}>
               Week View
             </button>
-            <button type="button" className="gantt-control-button" id="new-task">
-              Add New Bar
-            </button>
+            {svelteGanttRef.current && (
+              <>
+                <SvelteGanttAddBar gantt={svelteGanttRef.current} colour="orange" />
+                <SvelteGanttAddBar gantt={svelteGanttRef.current} colour="green" />
+                <SvelteGanttAddBar gantt={svelteGanttRef.current} colour="blue" />
+              </>
+            )}
           </div>
           <div className="gantt-chart" ref={divRef} />
+          <button type="button" className="gantt-control-button" onClick={toggleJson}>
+            Edit JSON
+          </button>
+          <pre
+            className="json-display"
+            contentEditable={true}
+            suppressContentEditableWarning={true}
+          >
+            {jsonFile}
+          </pre>
+          <button type="button" className="gantt-control-button" onClick={applyJsonChanges}>
+            View Changes
+          </button>
         </>
       )}
     </>
@@ -163,7 +240,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onFetchData: path => dispatch(actions.fetchData(path)),
-    onTaskChange: (taskInfo, path) => dispatch(actions.taskChange(taskInfo, path))
+    onTaskChange: (taskInfo, path) => dispatch(actions.taskChange(taskInfo, path)),
+    onSetDemoData: (rows, tasks) => dispatch(actions.setDemoData(rows, tasks))
   };
 };
 
