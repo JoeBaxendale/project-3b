@@ -99,6 +99,6 @@ openshift_deployment:
     - oc secrets link default docker-registry git docker-registry --for=pull
     - oc import-image registry.git.cf.ac.uk/c1888037/project-3b --confirm
     - oc get service workforce-planning || oc new-app project-3b --name workforce-planning
-    - oc get service workforce-planning || oc expose service workforce-planning --port 3000
+    - oc expose service workforce-planning --port 3000
   # only:
   #   - master
