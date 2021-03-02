@@ -3,7 +3,6 @@ image: node:12-alpine
 stages:
   - build
   - test
-  - dockerise
   - deploy
 
 cache:
@@ -61,44 +60,46 @@ build_node:
 #   only:
 #     - master
 
-docker_image:
+heroku_deployment:
   image: docker:latest
   services:
     - docker:dind
-  stage: dockerise
+  stage: deploy
   variables:
     # Tell docker CLI how to talk to Docker daemon; see
     # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ''
+  before_script:
+    - apk add --no-cache curl bash nodejs
+    - curl https://cli-assets.heroku.com/install.sh | sh
   tags:
     - comsc-ci
   script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.git.cf.ac.uk
-    - cd ./project-3b-frontend
-    - docker build -f Dockerfile.prod -t registry.git.cf.ac.uk/c1888037/project-3b .
-    - docker push registry.git.cf.ac.uk/c1888037/project-3b
-  # only:
-  #   - master
-
-openshift_deployment:
-  image: openshift/origin-cli
-  stage: deploy
-  tags:
-    - comsc-ci
-  script:
-    # - wget https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz
-    # - tar xvzf oc.tar.gz
-    # - rm oc.tar.gz
-    # - mv oc kubectl /usr/local/bin/
-    - oc login https://openshift.cs.cf.ac.uk:443 --token=$CI_OPENSHIFT_TOKEN
-    - oc project workforce-planning-project || oc new-project workforce-planning-project
-    # - oc create secret docker-registry docker-registry --docker-server=registry.git.cf.ac.uk --docker-username=C1888037 --docker-password=$CI_PASSWORD --docker-email=bhalal@cardiff.ac.uk
-    # - oc create secret docker-registry git --docker-server=https://git.cardiff.ac.uk --docker-username=C1888037 --docker-password=$CI_PASSWORD --docker-email=bhalal@cardiff.ac.uk
-    - oc secrets link default docker-registry git docker-registry --for=pull
-    - oc import-image registry.git.cf.ac.uk/c1888037/project-3b --confirm
-    - oc get service workforce-planning || oc new-app project-3b --name workforce-planning
-    - oc expose service workforce-planning --port 3000
-  # only:
-  #   - master
+    - docker login -u _ -p $HEROKU_TOKEN registry.heroku.com
+    # Deploy backend first as frontend depends on it
+    - cd ./project-3b-backend
+    # TODO: ADD BACKEND DEPLOYMENT - LC
+    - cd ../project-3b-frontend
+    - docker build -f Dockerfile.prod --iidfile imageid.txt -t registry.heroku.com/workforce-planning .
+    - docker push registry.heroku.com/workforce-planning
+    - |
+      curl -X PATCH https://api.heroku.com/apps/workforce-planning/formation \
+        -d '{
+        "updates": [
+          {
+            "type": "web",
+            "docker_image": "'$(cat imageid.txt)'"
+          },
+          {
+            "type": "worker",
+            "docker_image": "'$(cat imageid.txt)'"
+          }
+        ]
+      }' \
+        -H "Authorization: Bearer ${HEROKU_TOKEN}" \
+        -H "Content-Type: application/json" \
+        -H "Accept: application/vnd.heroku+json; version=3.docker-releases"
+  only:
+    - master
