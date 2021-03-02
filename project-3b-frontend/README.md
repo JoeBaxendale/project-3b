@@ -1,6 +1,6 @@
 # Project 3b Frontend
 
-This repository contains code for the frontend part of the application. The frontend is written in
+This directory contains code for the frontend part of the application. The frontend is written in
 JavaScript using React.
 
 ## Building the Project
@@ -17,6 +17,8 @@ In the project directory, run `npm install` to install the necessary packages an
 to run the application.
 
 > Note: Running `npm run build` is not necessary.
+
+Link to the deployed application: [https://workforce-planning.herokuapp.com/](https://workforce-planning.herokuapp.com/)
 
 ### Testing
 
