@@ -5,7 +5,6 @@ import moment from 'moment';
 import 'svelte-gantt/css/svelteGantt.css';
 import './SvelteGanttReact.css';
 
-
 const SvelteGanttReact = props => {
   const divRef = useRef(null);
   const svelteGanttRef = useRef(null);
@@ -19,22 +18,15 @@ const SvelteGanttReact = props => {
   const [error, setError] = useState('');
 
   const [jsonFile, setJsonFile] = useState([]);
-  // const [defaultText, setDefaultText] = useState('');
-
-  //let jsonFile = '';
-
+  const [labels, setLabels] = useState([]);
   let errorMessage = null;
   let title = null;
 
-  if (window.location.href.includes("FIELD_ENGINEER"))
-  {
-    title = "Engineers ";
-
+  if (window.location.href.includes('FIELD_ENGINEER')) {
+    title = 'Engineers ';
+  } else if (window.location.href.includes('TENNIS_COURT')) {
+    title = 'Tennis court ';
   }
-  else if(window.location.href.includes("TENNIS_COURT")) {
-    title = "Tennis court ";
-  }
- 
 
   useEffect(() => {
     fetch(`http://localhost:8080/getData/${props.location.pathname.split('/').pop()}`)
@@ -48,34 +40,43 @@ const SvelteGanttReact = props => {
         const rows = [];
         const tasks = [];
         const json = [];
-        json.push("rows: ");
+        json.push('rows: ');
         for (let key in resData.rows) {
-          json.push([resData.rows[key].id, " " + resData.rows[key].label]);
+          json.push([resData.rows[key].id, ' ' + resData.rows[key].label]);
           rows.push({
             ...resData.rows[key]
           });
-
         }
-        json.push("tasks:");
+        json.push('tasks:');
+        let data = [];
         for (let key in resData.tasks) {
-        json.push([resData.tasks[key].id, resData.tasks[key].resourceId, resData.tasks[key].label,
-          resData.tasks[key].from, resData.tasks[key].to]);
-        tasks.push({
-          ...resData.tasks[key],
-          from: moment(resData.tasks[key].from),
-          to: moment(resData.tasks[key].to)
-        });
-          console.log(tasks)
-      }
+          if (!data.includes(resData.tasks[key].label + ': ' + resData.tasks[key].classes + '\n')) {
+            data.push(resData.tasks[key].label + ': ' + resData.tasks[key].classes + '\n');
+          }
+          json.push([
+            resData.tasks[key].id,
+            resData.tasks[key].resourceId,
+            resData.tasks[key].label,
+            resData.tasks[key].from,
+            resData.tasks[key].to,
+            resData.tasks[key].classes
+          ]);
+          tasks.push({
+            ...resData.tasks[key],
+            from: moment(resData.tasks[key].from),
+            to: moment(resData.tasks[key].to)
+          });
+        }
         setRows(rows);
         setTasks(tasks);
         let newJson = [];
-        for(let i=0; i<(json.length);i++){
-          let newEntry =  json[i]  + "\n"
-          newJson.push(newEntry)
-
+        for (let i = 0; i < json.length; i++) {
+          let newEntry = json[i] + '\n';
+          newJson.push(newEntry);
         }
         setJsonFile(newJson);
+
+        setLabels(data);
       })
       .catch(err => {
         console.log(err);
@@ -101,8 +102,7 @@ const SvelteGanttReact = props => {
       to: currentEnd,
       minWidth: 2050,
 
-
-      tableHeaders: [{ title: title , property: 'label', width: 140, type: 'tree' }],
+      tableHeaders: [{ title: title, property: 'label', width: 140, type: 'tree' }],
       tableWidth: 240,
       ganttTableModules: [SvelteGanttTable],
       taskContent: task => `${task.label} ${task.from.format('HH:mm')}`
@@ -199,50 +199,85 @@ const SvelteGanttReact = props => {
   };
 
   const toggleJson = () => {
-    let element = document.getElementsByClassName("json-display")[0];
-    if(element.style.visibility == "visible") {
-      element.style.visibility = "hidden";
-    }else{
-      element.style.visibility = "visible";
+    let element = document.getElementsByClassName('json-display')[0];
+    if (element.style.visibility == 'visible') {
+      element.style.visibility = 'hidden';
+    } else {
+      element.style.visibility = 'visible';
     }
-  }
+  };
 
   const applyJsonChanges = () => {
-    let newJson = document.getElementsByClassName("json-display")[0].innerHTML;
-    newJson = newJson.split("\n");
+    let element = document.getElementsByClassName('json-display')[0].innerHTML;
+    let newJson = element.split('\n');
+    let oldLabels = [];
+    for (let i = 0; i < newJson.lastIndexOf('rows: '); i++) {
+      for (let j in labels) {
+        if (!oldLabels.includes(labels[j].trim('\n'))) {
+          oldLabels.push(labels[j].slice(0, -1));
+        }
+      }
+    }
+    let replacedLabel = ''
+    let newLabel = ''
+    for(let i =0; i<newJson.indexOf('rows: ');i++) {
+      if (!oldLabels.includes(newJson[i])) {
+        replacedLabel = labels[i]
+        labels[i] = newJson[i] + '\n'
+        newLabel = labels[i].slice(0, labels[i].indexOf(':'))
+      }
+      for (let j = newJson.lastIndexOf('tasks:') + 1; j < newJson.length - 1; j++) {
+        let task = newJson[j].split(',')
+        if (task[2] === replacedLabel.slice(0, replacedLabel.indexOf(':'))) {
+          task[2] = newLabel
+          newJson[j] = task.toString()
+        }
+      }
+    }
+
+    for (let i = newJson.indexOf('rows:'); i < newJson.length; i++) {
+      newJson[i] = newJson[i] + '\n';
+    }
+    let newJsonWithoutLabels = newJson.slice(newJson.indexOf('rows: \n'), newJson.length-1);
+    setJsonFile(newJsonWithoutLabels);
+    for (let i in labels) {
+      if (labels[i] === '') {
+        labels.splice(i, 1);
+      }
+    }
+    for (let i in oldLabels) {
+      if (oldLabels[i] === '') {
+        oldLabels.splice(i, 1);
+      }
+    }
     let newRows = [];
     let newTasks = [];
-    for(let i=1; i<newJson.indexOf("tasks:"); i++){
+    for (let i = newJson.lastIndexOf('rows: \n') + 1; i < newJson.indexOf('tasks:\n'); i++) {
       let newRow = new Object();
-      newRow.id = newJson[i].split(",")[0];
-      newRow.label = newJson[i].split(",")[1];
+      newRow.id = newJson[i].split(',')[0];
+      newRow.label = newJson[i].split(',')[1];
       newRows.push(newRow);
     }
-    for(let i=newJson.lastIndexOf("tasks:")+1; i<newJson.length-1; i++){
+
+    let labelsList = [];
+    for (let j in labels) {
+      let label = labels[j].slice(0, labels[j].indexOf(':'));
+      labelsList.push(label);
+    }
+    for (let i = newJson.lastIndexOf('tasks:\n') + 1; i < newJson.length - 1; i++) {
       let newTask = new Object();
-      let task = newJson[i].split(",");
+      let task = newJson[i].split(',');
       newTask.id = task[0];
       newTask.resourceId = parseInt(task[1]);
       newTask.label = task[2];
       newTask.from = moment(task[3]);
       newTask.to = moment(task[4]);
-      if(newTask.label== "Scheduled Shift" || newTask.label == "Available To Book"){
-        newTask.classes = "green"
-      }
-      if(newTask.label== "Overtime" || newTask.label == "Tournament"){
-        newTask.classes = "blue"
-      }
-      if(newTask.label== "Absence" || newTask.label == "Not Available"){
-        newTask.classes = "orange"
-      }
+      newTask.classes = task[5].trim('\n');
       newTasks.push(newTask);
     }
     setRows(newRows);
     setTasks(newTasks);
-    console.log(newTasks)
-  }
-
-
+  };
 
   return (
     <>
@@ -268,11 +303,17 @@ const SvelteGanttReact = props => {
             </button>
           </div>
           <div className="gantt-chart" ref={divRef} />
-          <button type="button" className="gantt-control-button" onClick={toggleJson}> Edit Json</button>
-          <pre className="json-display" contentEditable={true} >
-              {jsonFile}
+          <button type="button" className="gantt-control-button" onClick={toggleJson}>
+            {' '}
+            Edit Json
+          </button>
+          <pre className="json-display" contentEditable={true}>
+            {labels}
+            {jsonFile}
           </pre>
-          <button type="button" className="gantt-control-button" onClick={applyJsonChanges}>Submit Changes</button>
+          <button type="button" className="gantt-control-button" onClick={applyJsonChanges}>
+            Submit Changes
+          </button>
         </>
       )}
     </>
