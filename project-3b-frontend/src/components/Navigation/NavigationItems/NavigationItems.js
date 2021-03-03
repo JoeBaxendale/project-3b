@@ -9,6 +9,7 @@ const NavigationItems = props => {
       <NavigationItem link="/gantt-charts" exact>
         Gantt Charts
       </NavigationItem>
+      <NavigationItem link="/gantt-charts/demo-new-chart">Demo New Chart</NavigationItem>
     </ul>
   );
 };

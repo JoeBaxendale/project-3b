@@ -1,0 +1,20 @@
+.DemoButton {
+  margin: 5% auto;
+  width: 10%;
+  height: 40px;
+  background-color: #6400aa;
+  color: #fff;
+  border: none;
+  border-radius: 2px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.DemoButton:hover {
+  background-color: #540e85;
+}
+
+.DemoButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

@@ -18,13 +18,28 @@ exports.getData = async (req, res, next) => {
 
   //   await row.save();
 
+  //   let label = '';
+  //   const colour = colours[(Math.random() * colours.length) | 0];
+
+  //   switch (colour) {
+  //     case 'orange':
+  //       label = 'Absence';
+  //       break;
+  //     case 'green':
+  //       label = 'Scheduled Shift';
+  //       break;
+  //     case 'blue':
+  //       label = 'Overtime';
+  //       break;
+  //   }
+
   //   const task = new Task({
   //     _id: `5c0f66b979af55031b34720${i}`,
   //     row: row,
-  //     label: 'Scheduled Shift',
+  //     label: label,
   //     from: moment(`${randomHour}:00`, 'HH:mm'),
   //     to: moment(`${randomHour + randomDay}:00`, 'HH:mm'),
-  //     classes: colours[(Math.random() * colours.length) | 0]
+  //     classes: colour
   //   });
 
   //   await task.save();
@@ -44,13 +59,28 @@ exports.getData = async (req, res, next) => {
 
   //   await row.save();
 
+  //   let label = '';
+  //   const colour = colours[(Math.random() * colours.length) | 0];
+
+  //   switch (colour) {
+  //     case 'orange':
+  //       label = 'Not Available';
+  //       break;
+  //     case 'green':
+  //       label = 'Available To Book';
+  //       break;
+  //     case 'blue':
+  //       label = 'Tournament';
+  //       break;
+  //   }
+
   //   const task = new Task({
   //     _id: `5c0f66b979af55031b34720${i}`,
   //     row: row,
-  //     label: 'Scheduled Slot',
+  //     label: label,
   //     from: moment(`${randomHour}:00`, 'HH:mm'),
   //     to: moment(`${randomHour + randomDay}:00`, 'HH:mm'),
-  //     classes: colours[(Math.random() * colours.length) | 0]
+  //     classes: colour
   //   });
 
   //   await task.save();

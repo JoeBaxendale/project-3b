@@ -1,10 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { connect } from 'react-redux';
 import { SvelteGantt, SvelteGanttTable } from 'svelte-gantt';
 import moment from 'moment';
 
+import SvelteGanttAddBar from '../SvelteGanttAddBar/SvelteGanttAddBar';
+import Spinner from '../../components/UI/Spinner/Spinner';
 import 'svelte-gantt/css/svelteGantt.css';
 import './SvelteGanttReact.css';
-
+import * as actions from '../../store/actions';
 
 const SvelteGanttReact = props => {
   const divRef = useRef(null);
@@ -13,85 +16,30 @@ const SvelteGanttReact = props => {
   const currentStart = moment('00:00', 'HH:mm');
   const currentEnd = moment('23:59', 'HH:mm');
 
-  const [rows, setRows] = useState([]);
-  const [tasks, setTasks] = useState([]);
+  const { onFetchData, onTaskChange } = props;
 
-  const [error, setError] = useState('');
+  const lastPartOfUrl = props.location.pathname.split('/').pop();
 
   const [jsonFile, setJsonFile] = useState([]);
-  // const [defaultText, setDefaultText] = useState('');
 
-  //let jsonFile = '';
-
-  let errorMessage = null;
   let title = null;
-
-  if (window.location.href.includes("FIELD_ENGINEER"))
-  {
-    title = "Engineers ";
-
+  if (lastPartOfUrl === 'FIELD_ENGINEER') {
+    title = 'Field Engineers';
+  } else if (lastPartOfUrl === 'TENNIS_COURT') {
+    title = 'Tennis Court';
   }
-  else if(window.location.href.includes("TENNIS_COURT")) {
-    title = "Tennis court ";
-  }
- 
 
   useEffect(() => {
-    fetch(`http://localhost:8080/getData/${props.location.pathname.split('/').pop()}`)
-      .then(res => {
-        if (res.status !== 200) {
-          throw new Error('Failed to fetch data.');
-        }
-        return res.json();
-      })
-      .then(resData => {
-        const rows = [];
-        const tasks = [];
-        const json = [];
-        json.push("rows: ");
-        for (let key in resData.rows) {
-          json.push([resData.rows[key].id, " " + resData.rows[key].label]);
-          rows.push({
-            ...resData.rows[key]
-          });
-
-        }
-        json.push("tasks:");
-        for (let key in resData.tasks) {
-        json.push([resData.tasks[key].id, resData.tasks[key].resourceId, resData.tasks[key].label,
-          resData.tasks[key].from, resData.tasks[key].to]);
-        tasks.push({
-          ...resData.tasks[key],
-          from: moment(resData.tasks[key].from),
-          to: moment(resData.tasks[key].to)
-        });
-          console.log(tasks)
-      }
-        setRows(rows);
-        setTasks(tasks);
-        let newJson = [];
-        for(let i=0; i<(json.length);i++){
-          let newEntry =  json[i]  + "\n"
-          newJson.push(newEntry)
-
-        }
-        setJsonFile(newJson);
-      })
-      .catch(err => {
-        console.log(err);
-        setError(err.message);
-      });
-  }, [props.location.pathname]);
-
-  errorMessage = <p>{error}</p>;
+    onFetchData(lastPartOfUrl);
+  }, [onFetchData, lastPartOfUrl]);
 
   useEffect(() => {
     // Cannot do anything without the div.
     if (!divRef.current) return;
 
     const options = {
-      rows: rows,
-      tasks: tasks,
+      rows: props.rows,
+      tasks: props.tasks,
       headers: [
         { unit: 'day', format: 'dddd D MMMM', sticky: true },
         { unit: 'hour', format: 'HH:mm', sticky: true }
@@ -100,9 +48,7 @@ const SvelteGanttReact = props => {
       from: currentStart,
       to: currentEnd,
       minWidth: 2050,
-
-
-      tableHeaders: [{ title: title , property: 'label', width: 140, type: 'tree' }],
+      tableHeaders: [{ title: title, property: 'label', width: 140, type: 'tree' }],
       tableWidth: 240,
       ganttTableModules: [SvelteGanttTable],
       taskContent: task => `${task.label} ${task.from.format('HH:mm')}`
@@ -118,37 +64,41 @@ const SvelteGanttReact = props => {
       // Update current element.
       svelteGanttRef.current.$set(options);
     }
-  }, [rows, tasks, currentStart, currentEnd]);
+  }, [props.rows, props.tasks, currentStart, currentEnd, title]);
 
   useEffect(() => {
+    // The Gantt chart needs to be mounted.
     if (!svelteGanttRef.current) return;
 
     svelteGanttRef.current.api.tasks.on.changed(task => {
-      fetch('http://localhost:8080/task', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          movedTask: task[0].task.model,
-          newRow:
-            task[0].sourceRow.model !== task[0].targetRow.model ? task[0].targetRow.model : null
-        })
-      })
-        .then(res => {
-          if (res.status !== 200 && res.status !== 201) {
-            throw new Error('Could not update row!');
-          }
-          return res.json();
-        })
-        .then(resData => {
-          console.log(resData);
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      onTaskChange(task[0], lastPartOfUrl);
     });
-  }, []);
+  }, [onTaskChange, lastPartOfUrl]);
+
+  useEffect(() => {
+    const json = [];
+    json.push('rows: ');
+    for (let key in props.rows) {
+      json.push([props.rows[key].id, ' ' + props.rows[key].label]);
+    }
+    json.push('tasks:');
+    for (let key in props.tasks) {
+      json.push([
+        props.tasks[key].id,
+        props.tasks[key].resourceId,
+        props.tasks[key].label,
+        props.tasks[key].from,
+        props.tasks[key].to,
+        props.tasks[key].classes
+      ]);
+    }
+    let newJson = [];
+    for (let i = 0; i < json.length; i++) {
+      let newEntry = json[i] + '\n';
+      newJson.push(newEntry);
+    }
+    setJsonFile(newJson);
+  }, [props.rows, props.tasks]);
 
   const onSetPreviousDay = () => {
     currentStart.subtract(1, 'day');
@@ -199,55 +149,42 @@ const SvelteGanttReact = props => {
   };
 
   const toggleJson = () => {
-    let element = document.getElementsByClassName("json-display")[0];
-    if(element.style.visibility == "visible") {
-      element.style.visibility = "hidden";
-    }else{
-      element.style.visibility = "visible";
-    }
-  }
+    let element = document.getElementsByClassName('json-display')[0];
+    element.style.visibility === 'visible'
+      ? (element.style.visibility = 'hidden')
+      : (element.style.visibility = 'visible');
+  };
 
   const applyJsonChanges = () => {
-    let newJson = document.getElementsByClassName("json-display")[0].innerHTML;
-    newJson = newJson.split("\n");
+    let newJson = document.getElementsByClassName('json-display')[0].innerHTML;
+    newJson = newJson.split('\n');
     let newRows = [];
     let newTasks = [];
-    for(let i=1; i<newJson.indexOf("tasks:"); i++){
-      let newRow = new Object();
-      newRow.id = newJson[i].split(",")[0];
-      newRow.label = newJson[i].split(",")[1];
+    for (let i = 1; i < newJson.indexOf('tasks:'); i++) {
+      let newRow = {};
+      newRow.id = newJson[i].split(',')[0];
+      newRow.label = newJson[i].split(',')[1];
       newRows.push(newRow);
     }
-    for(let i=newJson.lastIndexOf("tasks:")+1; i<newJson.length-1; i++){
-      let newTask = new Object();
-      let task = newJson[i].split(",");
+    for (let i = newJson.lastIndexOf('tasks:') + 1; i < newJson.length - 1; i++) {
+      let newTask = {};
+      let task = newJson[i].split(',');
       newTask.id = task[0];
-      newTask.resourceId = parseInt(task[1]);
+      newTask.resourceId = task[1];
       newTask.label = task[2];
       newTask.from = moment(task[3]);
       newTask.to = moment(task[4]);
-      if(newTask.label== "Scheduled Shift" || newTask.label == "Available To Book"){
-        newTask.classes = "green"
-      }
-      if(newTask.label== "Overtime" || newTask.label == "Tournament"){
-        newTask.classes = "blue"
-      }
-      if(newTask.label== "Absence" || newTask.label == "Not Available"){
-        newTask.classes = "orange"
-      }
+      newTask.classes = task[5];
       newTasks.push(newTask);
     }
-    setRows(newRows);
-    setTasks(newTasks);
-    console.log(newTasks)
-  }
-
-
+    props.onSetDemoData(newRows, newTasks);
+  };
 
   return (
     <>
-      {error ? (
-        errorMessage
+      {props.loading && <Spinner />}
+      {props.error ? (
+        <p>{props.error}</p>
       ) : (
         <>
           <div className="gantt-controls">
@@ -263,20 +200,49 @@ const SvelteGanttReact = props => {
             <button type="button" className="gantt-control-button" onClick={onSetWeekView}>
               Week View
             </button>
-            <button type="button" className="gantt-control-button" id="new-task">
-              Add New Bar
-            </button>
+            {svelteGanttRef.current && (
+              <>
+                <SvelteGanttAddBar gantt={svelteGanttRef.current} colour="orange" />
+                <SvelteGanttAddBar gantt={svelteGanttRef.current} colour="green" />
+                <SvelteGanttAddBar gantt={svelteGanttRef.current} colour="blue" />
+              </>
+            )}
           </div>
           <div className="gantt-chart" ref={divRef} />
-          <button type="button" className="gantt-control-button" onClick={toggleJson}> Edit Json</button>
-          <pre className="json-display" contentEditable={true} >
-              {jsonFile}
+          <button type="button" className="gantt-control-button" onClick={toggleJson}>
+            Edit JSON
+          </button>
+          <pre
+            className="json-display"
+            contentEditable={true}
+            suppressContentEditableWarning={true}
+          >
+            {jsonFile}
           </pre>
-          <button type="button" className="gantt-control-button" onClick={applyJsonChanges}>Submit Changes</button>
+          <button type="button" className="gantt-control-button" onClick={applyJsonChanges}>
+            View Changes
+          </button>
         </>
       )}
     </>
   );
 };
 
-export default SvelteGanttReact;
+const mapStateToProps = state => {
+  return {
+    rows: state.gantt.rows,
+    tasks: state.gantt.tasks,
+    error: state.gantt.error,
+    loading: state.gantt.loading
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onFetchData: path => dispatch(actions.fetchData(path)),
+    onTaskChange: (taskInfo, path) => dispatch(actions.taskChange(taskInfo, path)),
+    onSetDemoData: (rows, tasks) => dispatch(actions.setDemoData(rows, tasks))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SvelteGanttReact);
