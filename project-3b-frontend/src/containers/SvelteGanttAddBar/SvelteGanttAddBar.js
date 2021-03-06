@@ -5,7 +5,6 @@ import { SvelteGanttExternal } from 'svelte-gantt';
 
 import classes from './SvelteGanttAddBar.module.css';
 import * as actions from '../../store/actions';
-import mapDispatchToProps from 'react-redux/lib/connect/mapDispatchToProps';
 
 const SvelteGanttAddBar = props => {
   const newTaskRef = useRef(null);
