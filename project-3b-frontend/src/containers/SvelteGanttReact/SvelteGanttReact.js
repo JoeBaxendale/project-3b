@@ -21,8 +21,7 @@ const SvelteGanttReact = props => {
   const lastPartOfUrl = props.location.pathname.split('/').pop();
 
   const [jsonFile, setJsonFile] = useState([]);
-  const[newJson, getJson] = useState([]);
-  const [changes , setchanges]=useState([]);
+
   let title = null;
   if (lastPartOfUrl === 'FIELD_ENGINEER') {
     title = 'Field Engineers';
@@ -155,34 +154,17 @@ const SvelteGanttReact = props => {
       ? (element.style.visibility = 'hidden')
       : (element.style.visibility = 'visible');
   };
-  const logger = () => {
-    if (jsonFile) {
-      console.log("there is diffrents ");
-    }
-
-  };
 
   const applyJsonChanges = () => {
     let newJson = document.getElementsByClassName('json-display')[0].innerHTML;
     newJson = newJson.split('\n');
     let newRows = [];
     let newTasks = [];
-    let oldRows = [];
-    let oldTasks = [];
     for (let i = 1; i < newJson.indexOf('tasks:'); i++) {
       let newRow = {};
-      let oldRow={};
       newRow.id = newJson[i].split(',')[0];
-      oldRow.id =jsonFile[i].split( ',')[0];
       newRow.label = newJson[i].split(',')[1];
-      oldRows.label = jsonFile[i].split(',')[1];
       newRows.push(newRow);
-      oldRows.push();
-      if( newRow.label !== oldRows.label)
-      {
-        changes.push(newRow);
-        console.log("thissss"+newRow.id+ oldRows.id +"and" + newRow.label + "    " + oldRow.label);
-      }
     }
     for (let i = newJson.lastIndexOf('tasks:') + 1; i < newJson.length - 1; i++) {
       let newTask = {};
@@ -196,9 +178,7 @@ const SvelteGanttReact = props => {
       newTasks.push(newTask);
     }
     props.onSetDemoData(newRows, newTasks);
-    logger();
   };
-
 
   return (
     <>
@@ -262,18 +242,7 @@ const mapDispatchToProps = dispatch => {
     onFetchData: path => dispatch(actions.fetchData(path)),
     onTaskChange: (taskInfo, path) => dispatch(actions.taskChange(taskInfo, path)),
     onSetDemoData: (rows, tasks) => dispatch(actions.setDemoData(rows, tasks))
-
   };
 };
-const log4js = state => {
-  require("log4js");
-  console.log("here");
-  log4js.configure({
-    appenders: { changes: { type: "file", filename: "changes.log" } },
-    categories: { default: { appenders: ["changes"], level: "error" } }
-  });
-}
-
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(SvelteGanttReact);
