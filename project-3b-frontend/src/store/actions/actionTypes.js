@@ -7,3 +7,7 @@ export const TASK_CHANGE_SUCCESS = 'TASK_CHANGE_SUCCESS';
 export const TASK_CHANGE_FAIL = 'TASK_CHANGE_FAIL';
 
 export const SET_DEMO_DATA = 'SET_DEMO_DATA';
+
+export const ADD_BAR_START = 'ADD_BAR_START';
+export const ADD_BAR_SUCCESS = 'ADD_BAR_SUCCESS';
+export const ADD_BAR_FAIL = 'ADD_BAR_FAIL';
