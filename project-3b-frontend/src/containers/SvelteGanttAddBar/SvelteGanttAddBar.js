@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { SvelteGanttExternal } from 'svelte-gantt';
 
 import classes from './SvelteGanttAddBar.module.css';
+import * as actions from '../../store/actions';
 
 const SvelteGanttAddBar = props => {
   const newTaskRef = useRef(null);
@@ -32,6 +34,7 @@ const SvelteGanttAddBar = props => {
         dragButtonClass = 'Bar1';
     }
   }
+
   if (lastPartOfUrl === 'TENNIS_COURT') {
     switch (props.colour) {
       case 'orange':
@@ -57,14 +60,16 @@ const SvelteGanttAddBar = props => {
       gantt,
       onsuccess: (row, date, gantt) => {
         const id = 5000 + Math.floor(Math.random() * 1000);
-        gantt.updateTask({
+        const newBar = {
           id,
           label: dragButtonLabel,
           from: date,
           to: date.clone().add(3, 'hour'),
           classes: props.colour,
           resourceId: row.model.id
-        });
+        };
+        gantt.updateTask(newBar);
+        props.onAddBar(newBar);
       }
     });
   }, [gantt, dragButtonLabel, props.colour]);
@@ -78,4 +83,10 @@ const SvelteGanttAddBar = props => {
   );
 };
 
-export default withRouter(SvelteGanttAddBar);
+const mapDispatchToProps = dispatch => {
+  return {
+    onAddBar: newBar => dispatch(actions.addBar(newBar))
+  };
+};
+
+export default withRouter(connect(null, mapDispatchToProps)(SvelteGanttAddBar));

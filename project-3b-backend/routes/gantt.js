@@ -8,4 +8,6 @@ router.get('/getData/:ganttChartType', ganttController.getData);
 
 router.patch('/task', ganttController.updateTask);
 
+router.post('/addBar', ganttController.addBar);
+
 module.exports = router;

@@ -130,6 +130,7 @@ exports.getData = async (req, res, next) => {
 
 exports.updateTask = async (req, res, next) => {
   const movedTask = req.body.movedTask;
+  const newBar = req.body.newBar;
   try {
     const task = await Task.findById(`5c0f66b979af55031b347${movedTask.id}`);
     if (!task) {
@@ -163,6 +164,35 @@ exports.updateTask = async (req, res, next) => {
     await task.save();
 
     res.status(200).json({ message: 'Task updated.', task: task });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.addBar = async (req, res, next) => {
+  const newBar = req.body.newBar;
+  try {
+    // Workaround to find next task ID.
+    const latestTask = await Task.findOne({}, { _id: 1 }).sort({ createdAt: -1 });
+
+    const task = new Task({
+      _id: `5c0f66b979af55031b347${+latestTask.id.slice(-3) + 1}`,
+      row: `5c0f66b979af55031b347${newBar.resourceId}`,
+      label: newBar.label,
+      from: newBar.from,
+      to: newBar.to,
+      classes: newBar.classes
+    });
+
+    await task.save();
+
+    // Add the new bar/task to row's task array.
+    const associatedRow = await Row.findById(`5c0f66b979af55031b347${newBar.resourceId}`);
+    associatedRow.tasks.push(task);
+    await associatedRow.save();
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

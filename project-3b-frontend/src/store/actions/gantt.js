@@ -51,6 +51,25 @@ export const setDemoData = (rows, tasks) => {
   };
 };
 
+export const addBarStart = () => {
+  return {
+    type: actionTypes.ADD_BAR_START
+  };
+};
+
+export const addBarSuccess = () => {
+  return {
+    type: actionTypes.ADD_BAR_SUCCESS
+  };
+};
+
+export const addBarFail = error => {
+  return {
+    type: actionTypes.ADD_BAR_FAIL,
+    error: error
+  };
+};
+
 export const fetchData = path => {
   return async dispatch => {
     const rows = [];
@@ -119,6 +138,34 @@ export const taskChange = (taskInfo, path) => {
         console.log(err.message);
         dispatch(taskChangeFail(err.message));
       }
+    }
+  };
+};
+
+export const addBar = newBar => {
+  return async dispatch => {
+    dispatch(addBarStart());
+    try {
+      const response = await fetch(`${BACKEND_URL}/addBar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          newBar: newBar
+        })
+      });
+
+      const resData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(resData.message || 'Could not add bar!');
+      }
+
+      dispatch(addBarSuccess());
+    } catch (err) {
+      console.log(err.message);
+      dispatch(addBarFail(err.message));
     }
   };
 };
