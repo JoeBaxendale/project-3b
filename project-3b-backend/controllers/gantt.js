@@ -130,7 +130,6 @@ exports.getData = async (req, res, next) => {
 
 exports.updateTask = async (req, res, next) => {
   const movedTask = req.body.movedTask;
-  const newBar = req.body.newBar;
   try {
     const task = await Task.findById(`5c0f66b979af55031b347${movedTask.id}`);
     if (!task) {
@@ -189,10 +188,12 @@ exports.addBar = async (req, res, next) => {
 
     await task.save();
 
-    // Add the new bar/task to row's task array.
+    // Add the new bar/task to row's tasks array.
     const associatedRow = await Row.findById(`5c0f66b979af55031b347${newBar.resourceId}`);
     associatedRow.tasks.push(task);
     await associatedRow.save();
+
+    res.status(200).json({ message: 'Task successfully added.', task: task });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
