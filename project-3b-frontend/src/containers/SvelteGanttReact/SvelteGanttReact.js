@@ -8,6 +8,7 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import 'svelte-gantt/css/svelteGantt.css';
 import './SvelteGanttReact.css';
 import * as actions from '../../store/actions';
+import * as winston from 'winston';
 
 const SvelteGanttReact = props => {
   const divRef = useRef(null);
@@ -22,6 +23,7 @@ const SvelteGanttReact = props => {
 
   const [jsonFile, setJsonFile] = useState([]);
   const [labels, setLabels] = useState([]);
+
 
   let title = null;
   if (lastPartOfUrl === 'FIELD_ENGINEER') {
@@ -73,8 +75,14 @@ const SvelteGanttReact = props => {
 
     svelteGanttRef.current.api.tasks.on.changed(task => {
       onTaskChange(task[0], lastPartOfUrl);
+
+      console.log("changed task: ");
+      console.log( task[0].task.model);
+      let changedTask = task[0].task.model
+      writeChangesToFile("graph",changedTask)
     });
   }, [onTaskChange, lastPartOfUrl]);
+
 
   useEffect(() => {
     const json = [];
@@ -235,54 +243,68 @@ const SvelteGanttReact = props => {
       {
         if( newRows[i].id !== props.rows[i].id)
         {
+          console.log(props.rows[i]);
           changes.push( newRows[i]);
-
+          console.log(changes);
         }
         else if( newRows[i].label !== props.rows[i].label)
         {
+          console.log(props.rows[i]);
           changes.push( newRows[i]);
-
+          console.log(changes);
         }
       }
       for( let i =0 ; i< newTasks.length ; i++)
       {
         if(newTasks[i].id !== props.tasks[i].id)
         {
+          console.log(props.tasks[i]);
           changes.push(newTasks[i]);
-
+          console.log(changes);
         }
         else if(newTasks[i].resourceId !== parseInt(props.tasks[i].resourceId))
         {
+          console.log(props.tasks[i]);
           changes.push(newTasks[i]);
-
+          console.log(changes);
         }
         else if(newTasks[i].label !== props.tasks[i].label)
         {
-
+          console.log(props.tasks[i]);
           changes.push(newTasks[i]);
+          console.log(changes);
         }
         else if(!newTasks[i].from.isSame(props.tasks[i].from))
         {
-
+          console.log(props.tasks[i]);
           changes.push(newTasks[i]);
+          console.log(changes);
         }
         else if(!newTasks[i].to.isSame(props.tasks[i].to))
         {
-
+          console.log(props.tasks[i]);
           changes.push(newTasks[i]);
+          console.log(changes);
         }
         else if(newTasks[i].classes !== props.tasks[i].classes)
         {
-
+          console.log(props.tasks[i]);
           changes.push(newTasks[i]);
+          console.log(changes);
         }
 
-        console.log((changes));
+
       }
-  
+      for(let i =0;i<changes.length;i++){
+        writeChangesToFile("json",changes[0])
+      }
       props.onSetDemoData(newRows, newTasks);
+
   };
 
+    const writeChangesToFile = (type,change) => {
+
+    }
   return (
     <>
       {props.loading && <Spinner />}
@@ -348,5 +370,6 @@ const mapDispatchToProps = dispatch => {
     onSetDemoData: (rows, tasks) => dispatch(actions.setDemoData(rows, tasks))
   };
 };
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(SvelteGanttReact);
