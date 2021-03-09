@@ -130,7 +130,7 @@ exports.getData = async (req, res, next) => {
 };
 
 exports.updateTask = async (req, res, next) => {
-  logger.info("gantt");
+  logger.info("change:");
   const movedTask = req.body.movedTask;
   try {
     const task = await Task.findById(`5c0f66b979af55031b347${movedTask.id}`);
