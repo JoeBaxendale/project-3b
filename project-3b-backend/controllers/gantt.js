@@ -2,7 +2,6 @@ const moment = require('moment');
 
 const Row = require('../models/row');
 const Task = require('../models/task');
-const logger = require('../logger/winstonLogger');
 
 exports.getData = async (req, res, next) => {
   // const colours = ['blue', 'green', 'orange'];
@@ -130,17 +129,15 @@ exports.getData = async (req, res, next) => {
 };
 
 exports.updateTask = async (req, res, next) => {
-  logger.info("change:");
   const movedTask = req.body.movedTask;
   try {
     const task = await Task.findById(`5c0f66b979af55031b347${movedTask.id}`);
-
     if (!task) {
       const error = new Error('Task not found.');
       error.statusCode = 404;
       throw error;
     }
-    logger.info(task);
+
     // If the retreived `newRoom` is null i.e. the row was not changed...
     if (!req.body.newRow) {
       task.from = movedTask.from;
@@ -160,12 +157,11 @@ exports.updateTask = async (req, res, next) => {
     newRow.tasks.push(task);
     await newRow.save();
 
-
     task.row = newRow;
     task.from = movedTask.from;
     task.to = movedTask.to;
     await task.save();
-    logger.info(newRow.tasks);
+
     res.status(200).json({ message: 'Task updated.', task: task });
   } catch (err) {
     if (!err.statusCode) {
@@ -174,4 +170,3 @@ exports.updateTask = async (req, res, next) => {
     next(err);
   }
 };
-

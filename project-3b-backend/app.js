@@ -1,9 +1,17 @@
+const path = require('path');
+const fs = require('fs');
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const morgan = require('morgan');
+
 const ganttRoutes = require('./routes/gantt');
-const logger = require('./logger/winstonLogger');
+
 const app = express();
+
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+app.use(morgan('combined', { stream: accessLogStream }));
 
 app.use(bodyParser.json()); // application/json
 
@@ -23,7 +31,6 @@ app.use((error, req, res, next) => {
   const message = error.message;
   const data = error.data;
   res.status(status).json({ message: message, data: data });
-
 });
 
 mongoose
@@ -33,11 +40,10 @@ mongoose
       useNewUrlParser: true,
       useFindAndModify: false,
       useCreateIndex: true,
-      useUnifiedTopology: true,
+      useUnifiedTopology: true
     }
   )
   .then(result => {
     app.listen(process.env.PORT || 8080);
   })
   .catch(err => console.log(err));
-logger.info("app");

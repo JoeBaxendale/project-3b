@@ -8,7 +8,6 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import 'svelte-gantt/css/svelteGantt.css';
 import './SvelteGanttReact.css';
 import * as actions from '../../store/actions';
-import * as winston from 'winston';
 
 const SvelteGanttReact = props => {
   const divRef = useRef(null);
@@ -21,9 +20,9 @@ const SvelteGanttReact = props => {
 
   const lastPartOfUrl = props.location.pathname.split('/').pop();
 
+  const [toggleJson, setToggleJson] = useState(false);
   const [jsonFile, setJsonFile] = useState([]);
   const [labels, setLabels] = useState([]);
-
 
   let title = null;
   if (lastPartOfUrl === 'FIELD_ENGINEER') {
@@ -75,14 +74,10 @@ const SvelteGanttReact = props => {
 
     svelteGanttRef.current.api.tasks.on.changed(task => {
       onTaskChange(task[0], lastPartOfUrl);
-
-      console.log("changed task: ");
-      console.log( task[0].task.model);
-      let changedTask = task[0].task.model
-      writeChangesToFile("graph",changedTask)
+      console.log('Changed task:');
+      console.log(task[0].task.model);
     });
   }, [onTaskChange, lastPartOfUrl]);
-
 
   useEffect(() => {
     const json = [];
@@ -93,7 +88,7 @@ const SvelteGanttReact = props => {
     json.push('tasks:');
     let data = [];
     for (let key in props.tasks) {
-      if (!data.includes(props.tasks[key].label + ': ' + props.tasks[key].classes + '\n')){
+      if (!data.includes(props.tasks[key].label + ': ' + props.tasks[key].classes + '\n')) {
         data.push(props.tasks[key].label + ': ' + props.tasks[key].classes + '\n');
       }
       json.push([
@@ -162,149 +157,117 @@ const SvelteGanttReact = props => {
     });
   };
 
-  const toggleJson = () => {
-    let element = document.getElementsByClassName('json-display')[0];
-    element.style.visibility === 'visible'
-      ? (element.style.visibility = 'hidden')
-      : (element.style.visibility = 'visible');
-  };
-
-    const applyJsonChanges = () => {
-      let element = document.getElementsByClassName('json-display')[0].innerHTML;
-      let newJson = element.split('\n');
-      let oldLabels = [];
-      let changes =[];
-      for (let i = 0; i < newJson.lastIndexOf('rows: '); i++) {
-        for (let j in labels) {
-          if (!oldLabels.includes(labels[j].trim('\n'))) {
-            oldLabels.push(labels[j].slice(0, -1));
-          }
-        }
-      }
-      let replacedLabel = ''
-      let newLabel = ''
-      for(let i =0; i<newJson.indexOf('rows: ');i++) {
-        if (!oldLabels.includes(newJson[i])) {
-          replacedLabel = labels[i]
-          labels[i] = newJson[i] + '\n'
-          newLabel = labels[i].slice(0, labels[i].indexOf(':'))
-        }
-        for (let j = newJson.lastIndexOf('tasks:') + 1; j < newJson.length - 1; j++) {
-          let task = newJson[j].split(',')
-          if (task[2] === replacedLabel.slice(0, replacedLabel.indexOf(':'))) {
-            task[2] = newLabel
-            newJson[j] = task.toString()
-          }
-        }
-      }
-
-      for (let i = newJson.indexOf('rows:'); i < newJson.length; i++) {
-        newJson[i] = newJson[i] + '\n';
-      }
-      let newJsonWithoutLabels = newJson.slice(newJson.indexOf('rows: \n'), newJson.length-1);
-      setJsonFile(newJsonWithoutLabels);
-      for (let i in labels) {
-        if (labels[i] === '') {
-          labels.splice(i, 1);
-        }
-      }
-      for (let i in oldLabels) {
-        if (oldLabels[i] === '') {
-          oldLabels.splice(i, 1);
-        }
-      }
-      let newRows = [];
-      let newTasks = [];
-      for (let i = newJson.lastIndexOf('rows: \n') + 1; i < newJson.indexOf('tasks:\n'); i++) {
-        let newRow = new Object();
-        newRow.id = newJson[i].split(',')[0].trim('\n');
-        newRow.label = newJson[i].split(',')[1].trim('\n');
-        newRows.push(newRow);
-      }
-
-      let labelsList = [];
+  const applyJsonChanges = () => {
+    let element = document.getElementById('json-display').innerHTML;
+    let newJson = element.split('\n');
+    let oldLabels = [];
+    let changes = [];
+    for (let i = 0; i < newJson.lastIndexOf('rows: '); i++) {
       for (let j in labels) {
-        let label = labels[j].slice(0, labels[j].indexOf(':'));
-        labelsList.push(label);
+        if (!oldLabels.includes(labels[j].trim('\n'))) {
+          oldLabels.push(labels[j].slice(0, -1));
+        }
       }
-      for (let i = newJson.lastIndexOf('tasks:\n') + 1; i < newJson.length - 1; i++) {
-        let newTask = new Object();
-        let task = newJson[i].split(',');
-        newTask.id = task[0];
-        newTask.resourceId = parseInt(task[1]);
-        newTask.label = task[2];
-        newTask.from = moment(task[3]);
-        newTask.to = moment(task[4]);
-        newTask.classes = task[5].trim('\n');
-        newTasks.push(newTask);
+    }
+    let replacedLabel = '';
+    let newLabel = '';
+    for (let i = 0; i < newJson.indexOf('rows: '); i++) {
+      if (!oldLabels.includes(newJson[i])) {
+        replacedLabel = labels[i];
+        labels[i] = newJson[i] + '\n';
+        newLabel = labels[i].slice(0, labels[i].indexOf(':'));
       }
+      for (let j = newJson.lastIndexOf('tasks:') + 1; j < newJson.length - 1; j++) {
+        let task = newJson[j].split(',');
+        if (task[2] === replacedLabel.slice(0, replacedLabel.indexOf(':'))) {
+          task[2] = newLabel;
+          newJson[j] = task.toString();
+        }
+      }
+    }
 
-      for(let i =0 ; i < newRows.length ; i++)
-      {
-        if( newRows[i].id !== props.rows[i].id)
-        {
-          console.log(props.rows[i]);
-          changes.push( newRows[i]);
-          console.log(changes);
-        }
-        else if( newRows[i].label !== props.rows[i].label)
-        {
-          console.log(props.rows[i]);
-          changes.push( newRows[i]);
-          console.log(changes);
-        }
+    for (let i = newJson.indexOf('rows:'); i < newJson.length; i++) {
+      newJson[i] = newJson[i] + '\n';
+    }
+    let newJsonWithoutLabels = newJson.slice(newJson.indexOf('rows: \n'), newJson.length - 1);
+    setJsonFile(newJsonWithoutLabels);
+    for (let i in labels) {
+      if (labels[i] === '') {
+        labels.splice(i, 1);
       }
-      for( let i =0 ; i< newTasks.length ; i++)
-      {
-        if(newTasks[i].id !== props.tasks[i].id)
-        {
-          console.log(props.tasks[i]);
-          changes.push(newTasks[i]);
-          console.log(changes);
-        }
-        else if(newTasks[i].resourceId !== parseInt(props.tasks[i].resourceId))
-        {
-          console.log(props.tasks[i]);
-          changes.push(newTasks[i]);
-          console.log(changes);
-        }
-        else if(newTasks[i].label !== props.tasks[i].label)
-        {
-          console.log(props.tasks[i]);
-          changes.push(newTasks[i]);
-          console.log(changes);
-        }
-        else if(!newTasks[i].from.isSame(props.tasks[i].from))
-        {
-          console.log(props.tasks[i]);
-          changes.push(newTasks[i]);
-          console.log(changes);
-        }
-        else if(!newTasks[i].to.isSame(props.tasks[i].to))
-        {
-          console.log(props.tasks[i]);
-          changes.push(newTasks[i]);
-          console.log(changes);
-        }
-        else if(newTasks[i].classes !== props.tasks[i].classes)
-        {
-          console.log(props.tasks[i]);
-          changes.push(newTasks[i]);
-          console.log(changes);
-        }
-
-
+    }
+    for (let i in oldLabels) {
+      if (oldLabels[i] === '') {
+        oldLabels.splice(i, 1);
       }
-      for(let i =0;i<changes.length;i++){
-        writeChangesToFile("json",changes[0])
-      }
-      props.onSetDemoData(newRows, newTasks);
+    }
+    let newRows = [];
+    let newTasks = [];
+    for (let i = newJson.lastIndexOf('rows: \n') + 1; i < newJson.indexOf('tasks:\n'); i++) {
+      let newRow = {};
+      newRow.id = newJson[i].split(',')[0].trim('\n');
+      newRow.label = newJson[i].split(',')[1].trim('\n');
+      newRows.push(newRow);
+    }
 
+    let labelsList = [];
+    for (let j in labels) {
+      let label = labels[j].slice(0, labels[j].indexOf(':'));
+      labelsList.push(label);
+    }
+    for (let i = newJson.lastIndexOf('tasks:\n') + 1; i < newJson.length - 1; i++) {
+      let newTask = {};
+      let task = newJson[i].split(',');
+      newTask.id = task[0];
+      newTask.resourceId = parseInt(task[1]);
+      newTask.label = task[2];
+      newTask.from = moment(task[3]);
+      newTask.to = moment(task[4]);
+      newTask.classes = task[5].trim('\n');
+      newTasks.push(newTask);
+    }
+
+    for (let i = 0; i < newRows.length; i++) {
+      if (newRows[i].id !== props.rows[i].id) {
+        console.log(props.rows[i]);
+        changes.push(newRows[i]);
+        console.log(changes);
+      } else if (newRows[i].label !== props.rows[i].label) {
+        console.log(props.rows[i]);
+        changes.push(newRows[i]);
+        console.log(changes);
+      }
+    }
+    for (let i = 0; i < newTasks.length; i++) {
+      if (newTasks[i].id !== props.tasks[i].id) {
+        console.log(props.tasks[i]);
+        changes.push(newTasks[i]);
+        console.log(changes);
+      } else if (newTasks[i].resourceId !== parseInt(props.tasks[i].resourceId)) {
+        console.log(props.tasks[i]);
+        changes.push(newTasks[i]);
+        console.log(changes);
+      } else if (newTasks[i].label !== props.tasks[i].label) {
+        console.log(props.tasks[i]);
+        changes.push(newTasks[i]);
+        console.log(changes);
+      } else if (!newTasks[i].from.isSame(props.tasks[i].from)) {
+        console.log(props.tasks[i]);
+        changes.push(newTasks[i]);
+        console.log(changes);
+      } else if (!newTasks[i].to.isSame(props.tasks[i].to)) {
+        console.log(props.tasks[i]);
+        changes.push(newTasks[i]);
+        console.log(changes);
+      } else if (newTasks[i].classes !== props.tasks[i].classes) {
+        console.log(props.tasks[i]);
+        changes.push(newTasks[i]);
+        console.log(changes);
+      }
+    }
+    props.onSetDemoData(newRows, newTasks);
   };
 
-    const writeChangesToFile = (type,change) => {
-
-    }
   return (
     <>
       {props.loading && <Spinner />}
@@ -334,18 +297,28 @@ const SvelteGanttReact = props => {
             )}
           </div>
           <div className="gantt-chart" ref={divRef} />
-          <button type="button" className="gantt-control-button" onClick={toggleJson}>
+          <button
+            type="button"
+            className="gantt-control-button"
+            onClick={() => setToggleJson(!toggleJson)}
+          >
             Edit JSON
           </button>
           <pre
-            className="json-display"
+            id="json-display"
+            style={toggleJson === false ? { display: 'none' } : { display: 'block' }}
             contentEditable={true}
             suppressContentEditableWarning={true}
           >
             {labels}
             {jsonFile}
           </pre>
-          <button type="button" className="gantt-control-button" onClick={applyJsonChanges}>
+          <button
+            type="button"
+            className="gantt-control-button"
+            style={toggleJson === false ? { display: 'none' } : { display: 'block' }}
+            onClick={applyJsonChanges}
+          >
             View Changes
           </button>
         </>
@@ -370,6 +343,5 @@ const mapDispatchToProps = dispatch => {
     onSetDemoData: (rows, tasks) => dispatch(actions.setDemoData(rows, tasks))
   };
 };
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(SvelteGanttReact);
