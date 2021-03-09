@@ -1,9 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
 const ganttRoutes = require('./routes/gantt');
-
+const logger = require('./logger/winstonLogger');
 const app = express();
 
 app.use(bodyParser.json()); // application/json
@@ -24,6 +23,7 @@ app.use((error, req, res, next) => {
   const message = error.message;
   const data = error.data;
   res.status(status).json({ message: message, data: data });
+
 });
 
 mongoose
@@ -33,10 +33,11 @@ mongoose
       useNewUrlParser: true,
       useFindAndModify: false,
       useCreateIndex: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
     }
   )
   .then(result => {
     app.listen(process.env.PORT || 8080);
   })
   .catch(err => console.log(err));
+logger.info("app");
