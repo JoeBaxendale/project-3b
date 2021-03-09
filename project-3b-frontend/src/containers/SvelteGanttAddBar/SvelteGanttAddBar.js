@@ -9,7 +9,7 @@ import * as actions from '../../store/actions';
 const SvelteGanttAddBar = props => {
   const newTaskRef = useRef(null);
 
-  const { gantt } = props;
+  const { gantt, onAddBar } = props;
   const lastPartOfUrl = props.location.pathname.split('/').pop();
 
   let dragButtonLabel = '';
@@ -56,7 +56,7 @@ const SvelteGanttAddBar = props => {
   }
 
   useEffect(() => {
-    const external = new SvelteGanttExternal(newTaskRef.current, {
+    new SvelteGanttExternal(newTaskRef.current, {
       gantt,
       onsuccess: (row, date, gantt) => {
         const id = 5000 + Math.floor(Math.random() * 1000);
@@ -69,10 +69,10 @@ const SvelteGanttAddBar = props => {
           resourceId: row.model.id
         };
         gantt.updateTask(newBar);
-        props.onAddBar(newBar);
+        onAddBar(newBar);
       }
     });
-  }, [gantt, dragButtonLabel, props.colour]);
+  }, [gantt, dragButtonLabel, props.colour, onAddBar]);
 
   return (
     <div>
