@@ -1,8 +1,17 @@
+const path = require('path');
+const fs = require('fs');
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const morgan = require('morgan');
+
+const ganttRoutes = require('./routes/gantt');
 
 const app = express();
+
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+app.use(morgan('combined', { stream: accessLogStream }));
 
 app.use(bodyParser.json()); // application/json
 
@@ -12,6 +21,8 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
+
+app.use(ganttRoutes);
 
 // Registering the error-handling middleware
 app.use((error, req, res, next) => {
@@ -33,6 +44,6 @@ mongoose
     }
   )
   .then(result => {
-    app.listen(8080);
+    app.listen(process.env.PORT || 8080);
   })
   .catch(err => console.log(err));
