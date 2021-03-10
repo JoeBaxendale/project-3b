@@ -1,0 +1,186 @@
+.gantt-chart {
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.gantt-controls {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+}
+
+.gantt-control-button {
+  border: transparent;
+  font-size: 14px;
+  font-weight: 300;
+  padding: 6px 12px;
+  background: #7859cc;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+  outline: none;
+  margin: 2px;
+}
+
+.gantt-control-button:hover {
+  background-color: #947adb;
+}
+
+.gantt-control-button:active {
+  background-color: #560e91;
+}
+
+.row {
+  border-bottom: #efefef 1px solid;
+}
+
+.sg-gantt {
+  font-size: 10px;
+  color: #656565;
+}
+
+.moving {
+  opacity: 0.5;
+}
+
+.sg-task-background {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.selected {
+  color: #fff;
+  font-weight: 700;
+}
+
+.sg-task {
+  color: #fff;
+  margin: 0;
+}
+
+.sg-task:hover {
+  cursor: move;
+}
+
+@media only screen and (max-width: 900px) {
+  .gantt-chart {
+    flex-direction: column;
+  }
+
+  .gantt-controls {
+    justify-content: center;
+  }
+}
+
+/* --------------------------- */
+/* ------- Task colors ------- */
+/* --------------------------- */
+.sg-task.blue {
+  background: rgb(116, 191, 255);
+}
+
+.sg-task.blue:hover {
+  background: rgb(98, 161, 216);
+}
+
+.sg-task.blue.selected {
+  background: rgb(69, 112, 150);
+}
+
+.sg-task.selected:hover {
+  background: rgb(60, 98, 131);
+}
+
+.sg-task.green {
+  background-color: rgb(188, 235, 194);
+}
+
+.sg-task.green:hover {
+  background-color: rgb(143, 197, 150);
+}
+
+.sg-task.green.selected {
+  background: rgb(121, 150, 125);
+}
+
+.sg-task.green.selected:hover {
+  background: rgb(100, 126, 103);
+}
+
+.sg-task.orange {
+  background-color: rgb(254, 172, 49);
+}
+
+.sg-task.orange:hover {
+  background-color: rgb(238, 161, 45);
+}
+
+.sg-task.orange.selected {
+  background-color: rgb(219, 149, 45);
+}
+
+.sg-task.orange.selected:hover {
+  background-color: rgb(199, 135, 38);
+}
+
+.sg-table-body-cell {
+  border-bottom: #efefef 1px solid;
+  background-color: #fbfbfb;
+  font-weight: 700;
+}
+
+.sg-table-cell {
+  border-left: 1px solid #eee;
+}
+
+.column-header-cell {
+  justify-content: flex-start;
+  border-right: #efefef 1px solid;
+  border-bottom: #efefef 1px solid;
+}
+
+.sg-table-header,
+.sg-header {
+  border-top: #efefef 1px solid;
+}
+
+.sg-table-header {
+  border-bottom: #efefef 1px solid;
+  background-color: #fbfbfb;
+}
+
+.column {
+  border-right: #efefef 1px solid;
+}
+
+.row-disabled {
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(55, 55, 55, 0.1),
+    rgba(55, 55, 55, 0.1) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+}
+
+.sg-icon {
+  margin-right: 5px;
+}
+
+.sg-table-row.row-group .sg-table-body-cell {
+  background-color: #fbfbfb;
+}
+
+.sg-table-body-cell {
+  background-color: #fff;
+}
+
+.sg-external-indicator {
+  position: absolute;
+  background: #eee;
+  padding: 0.5em 1em;
+  font-size: 12px;
+  pointer-events: none;
+  background-color: rgb(116, 191, 255);
+  color: #fff;
+  z-index: 10;
+}

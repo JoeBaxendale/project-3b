@@ -1,70 +1,97 @@
-# Getting Started with Create React App
+# Project 3b Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This directory contains code for the frontend part of the application. The frontend is written in
+JavaScript using React.
 
-## Available Scripts
+## Building the Project
 
-In the project directory, you can run:
+### Prerequisites
 
-### `npm start`
+First, you'll need to install the dependency management tool:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- [`npm`](https://docs.npmjs.com/)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Building and Running
 
-### `npm test`
+In the project directory, run `npm install` to install the necessary packages and then `npm start`
+to run the application.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+> Note: Running `npm run build` is not necessary. Also, the Dockerfile (without the `prod`
+> extension) can be used for local development.
 
-### `npm run build`
+Link to the deployed application: [https://workforce-planning.herokuapp.com/](https://workforce-planning.herokuapp.com/)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Testing
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+For the React frontend tests, make sure you have already run `npm install` and then `npm test` in
+the project directory and press <kbd>a</kbd> to run all tests.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Other Notes
 
-### `npm run eject`
+#### Demoing a New Chart
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+When demoing a new chart, a specific JSON scheme needs to followed, such as follows:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```json
+[
+  { "id": "1", "label": "Foo" },
+  { "id": "2", "label": "Bar" },
+  { "id": "3", "label": "Baz" },
+  { "id": "4", "label": "Qux" }
+]
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```json
+[
+  {
+    "id": "1",
+    "resourceId": "1",
+    "label": "Scheduled Shift",
+    "from": "2021-02-18T01:00:00.000Z",
+    "to": "2021-02-18T04:00:00.000Z",
+    "classes": "green"
+  },
+  {
+    "id": "2",
+    "resourceId": "2",
+    "label": "Absence",
+    "from": "2021-02-18T02:00:00.000Z",
+    "to": "2021-02-18T07:00:00.000Z",
+    "classes": "orange"
+  }
+]
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- The first JSON data is for the rows. The second JSON data is for the tasks.
+- Every key and value needs to be in double quotation marks.
+- The JSON data needs to be enclosed in square brackets like above.
+- The `resourceId` needs to link to the `id` specified in the rows JSON data.
+- For both the rows and the tasks, the `id` field needs to be unique.
+- The format of the `from` and `to` fields needs to be like above.
+- The `classes` field only accepts the following colours: orange, green or blue.
 
-## Learn More
+There is a known bug in which clicking 'Demo' sometimes may **not** render **all** the rows and
+tasks, and only render the first one. In that case, as a workaround, you can drag the column which
+displays the rows as follows:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+![workaround]
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+[workaround]: https://i.stack.imgur.com/uOE8R.png
 
-### Code Splitting
+#### Gantt Chart Component
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+A limitation of the `svelte-gantt` library being used is that the ID of a row and a task (bar) needs
+to be an integer. However, as this project is using MongoDB instead of another database such as
+MySQL which has an auto-incrementing integer, you will see there are workarounds the application
+(both the frontend and backend) contains.
 
-### Analyzing the Bundle Size
+The `SvelteGanttAddBar` component also contains a similar issue in which the ID of the new bar is
+chosen at random as the `svelte-gantt` library requires it. However, when the newly added bar is
+moved, an error is displayed in the console log. This is because the ID does not match what is
+stored in MongoDB. A workaround for this specific case is to simply refresh the page when a bar/task
+is added.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+#### Edit JSON Feature
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+A known issue when using the edit JSON feature is that when a new bar is dragged onto the chart, the
+editable JSON code being displayed is not updated. As a workaround, the page can be refreshed.
