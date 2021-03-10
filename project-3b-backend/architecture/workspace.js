@@ -5,6 +5,7 @@ const Location = require('structurizr-typescript').Location;
 const ElementStyle = require('structurizr-typescript').ElementStyle;
 const Tags = require('structurizr-typescript').Tags;
 const Shape = require('structurizr-typescript').Shape;
+const Format = require('structurizr-typescript').Format;
 
 const WEB_BROWSER_TAG = 'Web Browser';
 const DATABASE_TAG = 'Database';
@@ -27,22 +28,22 @@ const workforcePlanning = model.addSoftwareSystem(
   Location.Internal
 );
 
-// The user persona.
-const user = model.addPerson(
-  'User',
-  'The user actually using the system to visualise the bookings/shifts.',
+// The consuming developer persona.
+const consumingDeveloper = model.addPerson(
+  'Consuming Developer',
+  'The developer actually using the Gantt component provided by this project in their application.',
   Location.External
 );
 
-// The developer persona.
-const developer = model.addPerson(
-  'Developer',
+// The extending developer persona.
+const extendingDeveloper = model.addPerson(
+  'Extending Developer',
   'The developer in BT extending on this project.',
   Location.External
 );
 
-user.uses(workforcePlanning, 'Uses');
-developer.uses(workforcePlanning, 'Uses');
+consumingDeveloper.uses(workforcePlanning, 'Uses');
+extendingDeveloper.uses(workforcePlanning, 'Uses');
 
 // Create external dependencies.
 const contextView = viewSet.createSystemContextView(
@@ -52,7 +53,7 @@ const contextView = viewSet.createSystemContextView(
 );
 contextView.addAllSoftwareSystems();
 contextView.addAllPeople();
-contextView.setAutomaticLayout(true);
+// contextView.setAutomaticLayout(true);
 
 // Create the container diagram...
 
@@ -107,20 +108,21 @@ const apiApplication = workforcePlanning.addContainer(
 
 const database = workforcePlanning.addContainer(
   'Database',
-  'Stores the Gantt chart for the two different domains (field engineers and tennis courts',
+  'Stores the Gantt chart for the two different domains (field engineers and tennis courts).',
   'MongoDB Atlas'
 );
 database.tags.add(DATABASE_TAG);
 
-user.uses(
+consumingDeveloper.uses(
   singlePageApplication,
   'Views the Gantt chart and can demo its functionalities using by visiting workforce-planning.herokuapp.com',
   'HTTPS'
 );
-developer.uses(testing, 'Reviews');
-developer.uses(architectureModel, 'Reviews');
-developer.uses(pipeline, 'Reviews');
-developer.uses(documentation, 'Reviews');
+consumingDeveloper.uses(documentation, 'Uses');
+extendingDeveloper.uses(testing, 'Reviews');
+extendingDeveloper.uses(architectureModel, 'Reviews');
+extendingDeveloper.uses(pipeline, 'Reviews');
+extendingDeveloper.uses(documentation, 'Reviews');
 
 webApplication.uses(architectureModel, 'Has artifact');
 webApplication.uses(workingAgreement, 'Has artifact');
@@ -139,7 +141,7 @@ const containerView = viewSet.createContainerView(
 );
 containerView.addAllPeople();
 containerView.addAllContainers();
-containerView.setAutomaticLayout(true);
+// containerView.setAutomaticLayout(true);
 
 // Add components...
 
@@ -301,14 +303,14 @@ const backendComponentView = viewSet.createComponentView(
   'The component diagram for the backend/API application.'
 );
 backendComponentView.addAllComponents();
-backendComponentView.setAutomaticLayout(true);
+// backendComponentView.setAutomaticLayout(true);
 const frontendComponentView = viewSet.createComponentView(
   singlePageApplication,
   'Frontend Components',
   'The component diagram for the frontend/single-page application.'
 );
 frontendComponentView.addAllComponents();
-frontendComponentView.setAutomaticLayout(true);
+// frontendComponentView.setAutomaticLayout(true);
 
 // Link the backend/API architecture model with the code.
 apiApplication.components.map(component => {
@@ -351,5 +353,17 @@ styles.addElementStyle(style4);
 styles.addElementStyle(style5);
 styles.addElementStyle(style6);
 styles.addElementStyle(style7);
+
+// Add some documentation to the model...
+
+workspace.documentation.addSection(
+  workforcePlanning,
+  'Context Diagram Documentation',
+  Format.Markdown,
+  'Here is some context about the Workforce Planning application...\n' +
+    '![](embed:context)\n' +
+    '### Consuming Developer\n...\n' +
+    '### Extending Developer\n...\n'
+);
 
 module.exports = workspace;
