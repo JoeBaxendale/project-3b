@@ -1,6 +1,6 @@
 {
   "name": "project-3b-backend",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Backend API for Project 3b.",
   "main": "app.js",
   "scripts": {
@@ -8,8 +8,8 @@
     "start": "node app.js",
     "start:dev": "nodemon app.js"
   },
-  "author": "Project 3b",
-  "license": "ISC",
+  "author": "Lakshay Bhala, Laura Camilleri, Joe Baxendale, Ghadah Abugharrarh",
+  "license": "MIT",
   "devDependencies": {
     "nodemon": "^2.0.7"
   },
