@@ -120,11 +120,13 @@ exports.getData = async (req, res, next) => {
       rows: rows,
       tasks: tasks
     });
+    return; // Added for testing
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
+    return err; // Added for testing
   }
 };
 
