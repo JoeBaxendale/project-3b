@@ -1,11 +1,10 @@
-
 # Project 3b Frontend
 
 ## Table of Contents
 
 1. [Overview](#overview)
 2. [Building The Project]( #building-the-project)
-3. [Testing]( #backend-testing)
+3. [Testing]( #frontend-testing)
 4. [Project Implementaion]( #implementing-the-project)
 
 This directory contains code for the frontend part of the application. The frontend is written in JavaScript using React.
