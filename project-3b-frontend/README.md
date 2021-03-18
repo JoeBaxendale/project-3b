@@ -19,7 +19,20 @@ to run the application.
 > Note: Running `npm run build` is not necessary. Also, the Dockerfile (without the `prod`
 > extension) can be used for local development.
 
-Link to the deployed application: [https://workforce-planning.herokuapp.com/](https://workforce-planning.herokuapp.com/)
+### Deployment
+
+Link to the deployed application:
+[https://workforce-planning.herokuapp.com/](https://workforce-planning.herokuapp.com/)
+
+The application is deployed using Heroku. When extending this project, the developer would need to:
+
+1. Have their own Heroku account.
+2. Create two applications in their Heroku instance - named `workforce-planning` for the frontend
+   and `workforce-planning-api` for the backend.
+3. Obtain the Heroku API key from
+   [https://dashboard.heroku.com/account](https://dashboard.heroku.com/account) and put it in the
+   CI/CD variables of the tool being used (e.g. GitLab, Jenkins, etc) with the key named as
+   `HEROKU_TOKEN`.
 
 ### Testing
 

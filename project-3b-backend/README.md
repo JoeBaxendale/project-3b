@@ -20,7 +20,8 @@ application in the development environment, run `npm run start:dev`.
 > `nodemon` and hence the application will not be restarted automatically upon changes to the code.
 > Also, the Dockerfile can be used for local development.
 
-Link to the deployed API: [https://workforce-planning-api.herokuapp.com/](https://workforce-planning-api.herokuapp.com/)
+Link to the deployed API:
+[https://workforce-planning-api.herokuapp.com/](https://workforce-planning-api.herokuapp.com/)
 
 ### Testing
 
