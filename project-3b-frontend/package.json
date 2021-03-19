@@ -2,6 +2,8 @@
   "name": "project-3b-frontend",
   "version": "0.1.0",
   "private": true,
+  "author": "Lakshay Bhala, Laura Camilleri, Joe Baxendale, Ghadah Abugharrarh",
+  "license": "MIT",
   "dependencies": {
     "@material-ui/core": "^4.11.3",
     "@testing-library/jest-dom": "^5.11.9",
@@ -43,6 +45,14 @@
     ]
   },
   "devDependencies": {
-    "prettier": "2.2.1"
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.6",
+    "prettier": "2.2.1",
+    "react-test-renderer": "^17.0.1"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "/node_modules/(?!svelte-gantt)"
+    ]
   }
 }
