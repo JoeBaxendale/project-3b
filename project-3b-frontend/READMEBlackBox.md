@@ -5,7 +5,7 @@
 An explanation as to how to display and implement a new domain of work into the application
 i.e., the usage of the gantt chart component. 
 
-###Initialize Svelte-Gantt
+### Initialize Svelte-Gantt
 
 //Short explanation saying you can set the domain values of a gantt chart in the
 `SvelteGantReact` component.
