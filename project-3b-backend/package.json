@@ -1,24 +1,28 @@
 {
   "name": "project-3b-backend",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Backend API for Project 3b.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --timeout 5000",
     "start": "node app.js",
     "start:dev": "nodemon app.js",
     "architecture": "nodemon architecture/index.js"
   },
-  "author": "Project 3b",
-  "license": "ISC",
+  "author": "Lakshay Bhala, Laura Camilleri, Joe Baxendale, Ghadah Abugharrarh",
+  "license": "MIT",
   "devDependencies": {
+    "chai": "^4.3.3",
+    "mocha": "^8.3.2",
     "nodemon": "^2.0.7",
+    "sinon": "^9.2.4",
     "structurizr-typescript": "^1.0.11"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "moment": "^2.29.1",
-    "mongoose": "^5.11.18"
+    "mongoose": "^5.11.18",
+    "morgan": "^1.10.0"
   }
 }

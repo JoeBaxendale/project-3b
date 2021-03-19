@@ -16,9 +16,23 @@ First, you'll need to install the dependency management tool:
 In the project directory, run `npm install` to install the necessary packages and then `npm start`
 to run the application.
 
-> Note: Running `npm run build` is not necessary.
+> Note: Running `npm run build` is not necessary. Also, the Dockerfile (without the `prod`
+> extension) can be used for local development.
 
-Link to the deployed application: [https://workforce-planning.herokuapp.com/](https://workforce-planning.herokuapp.com/)
+### Deployment
+
+Link to the deployed application:
+[https://workforce-planning.herokuapp.com/](https://workforce-planning.herokuapp.com/)
+
+The application is deployed using Heroku. When extending this project, the developer would need to:
+
+1. Have their own Heroku account.
+2. Create two applications in their Heroku instance - named `workforce-planning` for the frontend
+   and `workforce-planning-api` for the backend.
+3. Obtain the Heroku API key from
+   [https://dashboard.heroku.com/account](https://dashboard.heroku.com/account) and put it in the
+   CI/CD variables of the tool being used (e.g. GitLab, Jenkins, etc) with the key named as
+   `HEROKU_TOKEN`.
 
 ### Testing
 
@@ -76,3 +90,21 @@ displays the rows as follows:
 ![workaround]
 
 [workaround]: https://i.stack.imgur.com/uOE8R.png
+
+#### Gantt Chart Component
+
+A limitation of the `svelte-gantt` library being used is that the ID of a row and a task (bar) needs
+to be an integer. However, as this project is using MongoDB instead of another database such as
+MySQL which has an auto-incrementing integer, you will see there are workarounds the application
+(both the frontend and backend) contains.
+
+The `SvelteGanttAddBar` component also contains a similar issue in which the ID of the new bar is
+chosen at random as the `svelte-gantt` library requires it. However, when the newly added bar is
+moved, an error is displayed in the console log. This is because the ID does not match what is
+stored in MongoDB. A workaround for this specific case is to simply refresh the page when a bar/task
+is added.
+
+#### Edit JSON Feature
+
+A known issue when using the edit JSON feature is that when a new bar is dragged onto the chart, the
+editable JSON code being displayed is not updated. As a workaround, the page can be refreshed.
