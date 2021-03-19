@@ -6,7 +6,7 @@ import moment from 'moment';
 import classes from './DemoNewChart.module.css';
 import * as actions from '../../store/actions';
 
-const DemoNewChart = props => {
+export const DemoNewChart = props => {
   const [rowsInput, setRowsInput] = useState(null);
   const [tasksInput, setTasksInput] = useState(null);
 
