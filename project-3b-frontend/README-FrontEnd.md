@@ -33,8 +33,6 @@ First, you'll need to install the dependency management tool:
 
 ### Building and Running
 
-### Building and Running
-
 To build and run the project, open a console in both the frontend and the backend directory and run the command `npm install` and wait for the install process to be completed. Once completed on both consoles run the command `npm start`.
 
 > Note: Running `npm run build` is not necessary. Also, the Dockerfile (without the `prod` extension) can be used for local development.
