@@ -23,37 +23,26 @@ describe('Gantt Controller', function () {
           label: 'Field Engineer Row Label',
           type: 'FIELD_ENGINEER',
           tasks: [],
-          _id: '5c0f66b979af55031b34728a'
+          _id: '5c0f66b979af55031b347100'
         });
+        fieldEngineerRow.save();
+        const fieldEngineerTask = new Task({
+          row: '5c0f66b979af55031b347100',
+          label: 'Field Engineer Task Label',
+          from: Date.now(),
+          to: Date.now(),
+          classes: 'green',
+          _id: '5c0f66b979af55031b347200'
+        });
+        fieldEngineerTask.save();
+        fieldEngineerRow.tasks.push(fieldEngineerTask);
         fieldEngineerRow.save();
         const tennisCourtRow = new Row({
           label: 'Tennis Court Row Label',
           type: 'TENNIS_COURT',
           tasks: [],
-          _id: '5c0f66b979af55031b34728b'
+          _id: '5c0f66b979af55031b347101'
         });
-        tennisCourtRow.save();
-        const fieldEngineerTask = new Task({
-          row: '5c0f66b979af55031b34728a',
-          label: 'Field Engineer Task Label',
-          from: Date.now(),
-          to: Date.now(),
-          classes: 'green',
-          _id: '5c0f66b979af55031b34729a'
-        });
-        fieldEngineerTask.save();
-        fieldEngineerRow.tasks.push(fieldEngineerTask);
-        fieldEngineerRow.save();
-        const tennisCourtTask = new Task({
-          row: '5c0f66b979af55031b34728b',
-          label: 'Tennis Court Task Label',
-          from: Date.now(),
-          to: Date.now(),
-          classes: 'green',
-          _id: '5c0f66b979af55031b34729b'
-        });
-        tennisCourtTask.save();
-        tennisCourtRow.tasks.push(tennisCourtTask);
         tennisCourtRow.save();
       })
       .then(() => {
@@ -110,8 +99,41 @@ describe('Gantt Controller', function () {
     });
   });
 
+  it('should add the created task to tasks array of the associated row', function (done) {
+    const req = {
+      body: {
+        newBar: {
+          id: 5000,
+          label: 'New Task Label for Tennis Court Row',
+          from: Date.now(),
+          to: Date.now(),
+          classes: 'blue',
+          resourceId: '101'
+        }
+      }
+    };
+    const res = {
+      status: function () {
+        return this;
+      },
+      json: function () {}
+    };
+
+    GanttController.addBar(req, res, () => {})
+      .then(savedRow => {
+        expect(savedRow).to.have.property('tasks');
+        expect(savedRow.tasks).to.have.length(1);
+        expect(savedRow.tasks[0].id.toString().slice(-3)).to.equal('201');
+        done();
+      })
+      .catch(done);
+  });
+
   after(function (done) {
     Row.deleteMany({})
+      .then(() => {
+        return Task.deleteMany({});
+      })
       .then(() => {
         return mongoose.disconnect();
       })

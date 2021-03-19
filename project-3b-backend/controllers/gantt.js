@@ -193,9 +193,10 @@ exports.addBar = async (req, res, next) => {
     // Add the new bar/task to row's tasks array.
     const associatedRow = await Row.findById(`5c0f66b979af55031b347${newBar.resourceId}`);
     associatedRow.tasks.push(task);
-    await associatedRow.save();
+    const savedRow = await associatedRow.save();
 
     res.status(200).json({ message: 'Task successfully added.', task: task });
+    return savedRow; // Needed for testing
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
