@@ -39,7 +39,7 @@ the `SvelteGantAddBar` component
          }; 
 ```
 
-//Brief explanation of how classes variable are set in the variable colour which is set when `<SvelteGanttAddBar` 
+//Brief explanation of how classes variable are set in the variable colour which is set when `<SvelteGanttAddBar>` 
 is called in the `SvelteGantReact` component.
 
 ```javascript
