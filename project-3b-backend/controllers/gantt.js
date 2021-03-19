@@ -4,6 +4,7 @@ const Row = require('../models/row');
 const Task = require('../models/task');
 
 exports.getData = async (req, res, next) => {
+  // Following commented out code populates the database (for initial view).
   // const colours = ['blue', 'green', 'orange'];
 
   // for (let i = 0; i < 4; i++) {
