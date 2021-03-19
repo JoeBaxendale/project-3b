@@ -6,7 +6,7 @@ import { SvelteGanttExternal } from 'svelte-gantt';
 import classes from './SvelteGanttAddBar.module.css';
 import * as actions from '../../store/actions';
 
-const SvelteGanttAddBar = props => {
+export const SvelteGanttAddBar = props => {
   const newTaskRef = useRef(null);
 
   const { gantt, onAddBar } = props;
@@ -38,11 +38,11 @@ const SvelteGanttAddBar = props => {
   if (lastPartOfUrl === 'TENNIS_COURT') {
     switch (props.colour) {
       case 'orange':
-        dragButtonLabel = 'Available to Book';
+        dragButtonLabel = 'Not Available';
         dragButtonClass = 'Bar1';
         break;
       case 'green':
-        dragButtonLabel = 'Not Available';
+        dragButtonLabel = 'Available to Book';
         dragButtonClass = 'Bar2';
         break;
       case 'blue':
