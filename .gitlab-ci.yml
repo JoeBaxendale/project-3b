@@ -40,25 +40,25 @@ build_node:
     paths:
       - ./project-3b-backend/node_modules/
 
-# test_react:
-#   stage: test
-#   tags:
-#     - comsc-ci
-#   script:
-#     - cd ./project-3b-frontend
-#     - CI=true npm test
-#   only:
-#     - master
+test_react:
+  stage: test
+  tags:
+    - comsc-ci
+  script:
+    - cd ./project-3b-frontend
+    - CI=true npm test
+  only:
+    - master
 
-# test_node:
-#   stage: test
-#   tags:
-#     - comsc-ci
-#   script:
-#     - cd ./project-3b-backend
-#     - CI=true npm test
-#   only:
-#     - master
+test_node:
+  stage: test
+  tags:
+    - comsc-ci
+  script:
+    - cd ./project-3b-backend
+    - CI=true npm test
+  only:
+    - master
 
 heroku_deployment:
   image: docker:latest

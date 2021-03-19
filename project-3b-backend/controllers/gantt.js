@@ -4,6 +4,7 @@ const Row = require('../models/row');
 const Task = require('../models/task');
 
 exports.getData = async (req, res, next) => {
+  // Following commented out code populates the database (for initial view).
   // const colours = ['blue', 'green', 'orange'];
 
   // for (let i = 0; i < 4; i++) {
@@ -120,11 +121,13 @@ exports.getData = async (req, res, next) => {
       rows: rows,
       tasks: tasks
     });
+    return; // Added for testing
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     next(err);
+    return err; // Added for testing
   }
 };
 
@@ -191,9 +194,10 @@ exports.addBar = async (req, res, next) => {
     // Add the new bar/task to row's tasks array.
     const associatedRow = await Row.findById(`5c0f66b979af55031b347${newBar.resourceId}`);
     associatedRow.tasks.push(task);
-    await associatedRow.save();
+    const savedRow = await associatedRow.save();
 
     res.status(200).json({ message: 'Task successfully added.', task: task });
+    return savedRow; // Needed for testing
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
