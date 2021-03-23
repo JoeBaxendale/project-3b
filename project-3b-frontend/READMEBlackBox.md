@@ -165,12 +165,21 @@ section, you must go back to the switch statement posted above and change the re
 
 ### Receiving Data from the Chart
 
-Upon detecting that a bar has been changed on the chart, whether this is a movement on the chart or
-a completely new bar being added into the chart, the chart will call the updateTask function in the
+#### Moving a bar
+
+Upon detecting that a bar has been changed on the chart, whether this is a movement to another row or a change in the times,
+the chart will call the updateTask function in the
 backend system with the relevant data in the format in [parsing data to the
-chart](#parsing-data-to-the-chart). At present this function simply saves the data to the database.
+chart](#parsing-data-to-the-chart). This data parsing is done using http responses. At present this function simply saves the data to the database.
 However, the user can alter this function to reformat the data into their required data format. The
 function can then send the data to an external API or save straight into a database.
+
+#### Adding a bar
+
+When the user drags a new chart onto the bar the chart will make a call to the `SvelteGanttAddBar.js` which creates a new bar and assigns it the relevant data before
+making a call to the backend system using http requests. The backend system runs the function `addbar` in the file
+`project-3b-backend\controllers\gantt.js` which can be edited to reformat the data into a saveable format. The function can then
+send the data to an external API or save straight into a database.
 
 ### Save Changes from the Chart
 
