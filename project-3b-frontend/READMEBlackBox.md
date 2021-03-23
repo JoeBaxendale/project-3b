@@ -53,7 +53,8 @@ To change the values being shown on the chart, you must change the inputs in
 
 Seen below is the code snippet that would need to be edited in order to change the chart.
 
-```javascript const options = {  rows: props.rows,    
+```javascript
+ const options = {  rows: props.rows,    
   tasks: props.tasks,    
   headers: [    
  { unit: 'day', format: 'dddd D MMMM', sticky: true },    
@@ -79,24 +80,63 @@ The ``if`` statement must be changed to contain the ending of the url relevant t
 An example can be seen below.
 
 
-```javascript if (lastPartOfUrl === 'FIELD_ENGINEER') {}; ``` 
+```javascript
+if (lastPartOfUrl === 'FIELD_ENGINEER') {}; 
+``` 
 changes to  
-```javascript if (lastPartOfUrl === 'CAR_CHARGERS') {}; ```  
+```javascript
+if (lastPartOfUrl === 'CAR_CHARGERS') {}; 
+```  
 
 The ``switch`` statements must be edited to have the relevant labels for your implementation. An example can be seen below.
 
-```javascript switch (props.colour) {    
-case 'orange':  dragButtonLabel = 'Absence';  dragButtonClass = 'Bar1'; break; case 'green':  dragButtonLabel = 'Scheduled Shift';  dragButtonClass = 'Bar2'; break; case 'blue':  dragButtonLabel = 'Overtime';  dragButtonClass = 'Bar3'; break; default:  dragButtonLabel = 'Task';  dragButtonClass = 'Bar1';} ``` changes to  
-```javascript switch (props.colour) {    
-case 'orange':  dragButtonLabel = 'Booked';  dragButtonClass = 'Bar1'; break; case 'green':  dragButtonLabel = 'Available';  dragButtonClass = 'Bar2'; break; case 'blue':  dragButtonLabel = 'Out Of Order';  dragButtonClass = 'Bar3'; break; default:  dragButtonLabel = 'Task';  dragButtonClass = 'Bar1';} ```   
+```javascript
+  switch (props.colour) {    
+    case 'orange':  
+      dragButtonLabel = 'Absence'; 
+      dragButtonClass = 'Bar1'; 
+        break; 
+    case 'green':  
+      dragButtonLabel = 'Scheduled Shift'; 
+      dragButtonClass = 'Bar2'; 
+        break; 
+    case 'blue': 
+      dragButtonLabel = 'Overtime'; 
+      dragButtonClass = 'Bar3'; 
+        break; 
+    default: 
+      dragButtonLabel = 'Task'; 
+      dragButtonClass = 'Bar1';
+  } 
+``` 
+changes to  
+```javascript
+  switch (props.colour) {    
+    case 'orange':  
+      dragButtonLabel = 'Booked'; 
+      dragButtonClass = 'Bar1'; 
+        break; 
+    case 'green':  
+      dragButtonLabel = 'Available'; 
+      dragButtonClass = 'Bar2';
+        break; 
+    case 'blue':  
+      dragButtonLabel = 'Out Of Order'; 
+      dragButtonClass = 'Bar3'; 
+        break; 
+    default: 
+      dragButtonLabel = 'Task'; 
+      dragButtonClass = 'Bar1';
+  } 
+```   
   
 When a new bar is created, values must be assigned to the bar which match those of a task.    
 This is due to the system recognising the bars as tasks and attempting to call the backend with the values added to the bar.    
-Therefore the values must be the same as the values you want sending to the backend.  
+Therefore, the values must be the same as the values you want sending to the backend.  
   
 Below is an example of setting the values of a new bar.  
   
-```javascript    
+```javascript
  const id = 5000 + Math.floor(Math.random() * 1000);    
  const newBar = {  id,    
   label: dragButtonLabel,    
@@ -104,20 +144,21 @@ Below is an example of setting the values of a new bar.
   to: date.clone().add(3, 'hour'),    
   classes: props.colour,    
   resourceId: row.model.id    
- }; ```    
+ }; 
+```    
     
  The colours of the bars can be altered when placing them onto the chart by changing the colour in the initialisation of the ``SvelteGanntAddBar`` Objects *?.    
- Once the colours are changed in this section, you must also go back to the switch statement posted above and change the relevant colour.    
- ```javascript    
+ Once the colours are changed in this section, you must go back to the switch statement posted above and change the relevant colour.    
+ ```javascript
  <SvelteGanttAddBar gantt={svelteGanttRef.current} colour="orange" />    
 ```
 
 ### Receiving data from the chart
 
-Upon detecting that a bar has been changed on the chart, whether this is a movement on the chart or a completely new bar being added into the chart, the chart will call the updateTask function in the backend system with the relevant data in the format in [parsing data to the chart]( #parsing-data-to-the-chart).  At present this function simply saves the data to the database, however the user can alter this function to reformat the data into their required data format. The function can then send the data to an external API or save straight into a database.
+Upon detecting that a bar has been changed on the chart, whether this is a movement on the chart or a completely new bar being added into the chart, the chart will call the updateTask function in the backend system with the relevant data in the format in [parsing data to the chart]( #parsing-data-to-the-chart).  At present this function simply saves the data to the database. However, the user can alter this function to reformat the data into their required data format. The function can then send the data to an external API or save straight into a database.
 
 ### Save changes from the chart
 
-In order to save the changes from the chart's output, you must transform the data from the format mentioned above into the format that you require for saving. This can be done either by having your API reformat the data before sending it back to your original system, or by writing some functions in the webpage to reformat the data. This will likely be a case of inverting the changes you made above in [parsing data to the chart]( #parsing-data-to-the-chart).  
+In order to save the changes from the chart's output, you must transform the data from the format mentioned above into the format that you require for saving. This can be done either by having your API reformat the data before sending it back to your original system, or by writing some functions on the web page to reformat the data. This will likely be a case of inverting the changes you made above in [parsing data to the chart]( #parsing-data-to-the-chart).  
   
 
