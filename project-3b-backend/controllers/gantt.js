@@ -141,7 +141,7 @@ exports.updateTask = async (req, res, next) => {
       throw error;
     }
 
-    // If the retreived `newRoom` is null i.e. the row was not changed...
+    // If the retrieved `newRoom` is null i.e. the row was not changed...
     if (!req.body.newRow) {
       task.from = movedTask.from;
       task.to = movedTask.to;
