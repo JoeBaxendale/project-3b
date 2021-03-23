@@ -70,7 +70,7 @@ Example test data to put in the `rows` and `tasks` array can be found
 [here](project-3b-frontend/README.md#demoing-a-new-chart).
 
 Other options for the Gantt chart can be set as can be seen above. This shows how customisable this
-chart is. The different options can be viewed from the [Gantt chart library is project is
+chart is. The different options can be viewed from the [Gantt chart library this project is
 using](https://github.com/ANovokmet/svelte-gantt).
 
 ### Add New Bar
