@@ -67,7 +67,7 @@ const options = {
 ```
 
 Example test data to put in the `rows` and `tasks` array can be found
-[here](./README.md).
+[here](./README.md#demoing-a-new-chart).
 
 Other options for the Gantt chart can be set as can be seen above. This shows how customisable this
 chart is. The different options can be viewed from the [Gantt chart library this project is
@@ -165,21 +165,22 @@ section, you must go back to the switch statement posted above and change the re
 
 ### Receiving Data from the Chart
 
-#### Moving a bar
+#### Moving a Bar
 
-Upon detecting that a bar has been changed on the chart, whether this is a movement to another row or a change in the times,
-the chart will call the updateTask function in the
-backend system with the relevant data in the format in [parsing data to the
-chart](#parsing-data-to-the-chart). This data parsing is done using http responses. At present this function simply saves the data to the database.
-However, the user can alter this function to reformat the data into their required data format. The
-function can then send the data to an external API or save straight into a database.
+Upon detecting that a bar has been changed on the chart, whether this is a movement to another row
+or a change in the times, the chart will call the `updateTask` function in the backend system with
+the relevant data in the format in [parsing data to the chart](#parsing-data-to-the-chart). This
+data parsing is done using HTTP responses. At present, this function simply saves the data to the
+database. However, the user can alter this function to reformat the data into their required data
+format. The function can then send the data to an external API or save straight into a database.
 
-#### Adding a bar
+#### Adding a Bar
 
-When the user drags a new chart onto the bar the chart will make a call to the `SvelteGanttAddBar.js` which creates a new bar and assigns it the relevant data before
-making a call to the backend system using http requests. The backend system runs the function `addbar` in the file
-`project-3b-backend\controllers\gantt.js` which can be edited to reformat the data into a saveable format. The function can then
-send the data to an external API or save straight into a database.
+When the user drags a bar onto the chart, the `SvelteGanttAddBar` component will be used to create
+a new bar and assign it the relevant data before making a call to the backend system using HTTP
+requests. The backend system runs the method `addBar` in the `gantt` controller (present in the
+backend folder) which can be edited to reformat the data into a saveable format. The function can
+then send the data to an external API or save straight into a database.
 
 ### Save Changes from the Chart
 
